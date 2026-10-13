@@ -9,7 +9,7 @@ const listar = async () => {
 const criar = async (nome, email, phone, cpf_cnpj) => {
 
     // Verificar se o e-mail já está cadastrado
-    const clientExistente = await db.query('SELECT id FROM usuarios WHERE email = $1;', [email]);
+    const clientExistente = await db.query('SELECT id FROM clients WHERE email = $1;', [email]);
     
     if (clientExistente.rowCount > 0) {
         // Dispara um erro específico caso o e-mail já exista no Neon

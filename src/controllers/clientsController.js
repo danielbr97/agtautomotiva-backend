@@ -32,7 +32,7 @@ const criar = async (req, res) => {
         const newClient = await clientsService.criar(nome, email, phone, cpf_cnpj);
         return res.status(201).json(newClient);
     } catch (error) {
-        console.error("Erro em usuariosController.criar:", error);
+        console.error("Erro em clientsController.criar:", error);
 
         // Trata o erro de negócio específico disparado pelo Service
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
