@@ -6,7 +6,7 @@ const listar = async () => {
 };
 
 // Função para criar cliente
-const criar = async (nome, email, phone, cpf_cnpj) => {
+const criar = async (name, email, phone, cpf_cnpj) => {
 
     // Verificar se o e-mail já está cadastrado
     const clientExistente = await db.query('SELECT id FROM clients WHERE email = $1;', [email]);
@@ -17,8 +17,8 @@ const criar = async (nome, email, phone, cpf_cnpj) => {
     }
 
     // Se passou na validação, insere no banco
-    const sql = 'INSERT INTO clients (nome, email, phone, cpf_cnpj) VALUES ($1, $2, $3, $4) RETURNING *;';
-    const resultado = await db.query(sql, [nome, email, phone, cpf_cnpj]);
+    const sql = 'INSERT INTO clients (name, email, phone, cpf_cnpj) VALUES ($1, $2, $3, $4) RETURNING *;';
+    const resultado = await db.query(sql, [name, email, phone, cpf_cnpj]);
     
     return resultado.rows[0]; // Retorna apenas o objeto do cliente criado
 };

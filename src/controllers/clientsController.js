@@ -13,23 +13,15 @@ const listar = async (req, res) => {
 
 // Controller chamando Service criar cliente
 const criar = async (req, res) => {
-    const { nome, email, phone, cpf_cnpj } = req.body; // Pega os dados enviados pelo Front-end
+    const { name, email, phone, cpf_cnpj } = req.body; // Pega os dados enviados pelo Front-end
     
-    if (!nome || !email || !phone || !cpf_cnpj) {
+    if (!name || !email || !phone || !cpf_cnpj) {
         return res.status(400).json({ erro: 'Nome, email, CPF/CNPJ e telefone são obrigatórios' });
     }
 
     try {
-        const resultado = await clientsService.criar(sql, [nome, email, phone, cpf_cnpj]);
-        res.status(201).json(resultado.rows[0]); // Retorna o cliente criado
-    } catch (error) {
-        res.status(500).json({ erro: 'Erro ao salvar cliente no banco' });
-    }
-
-
-    try {
         // Passa os dados limpos para o serviço tratar
-        const newClient = await clientsService.criar(nome, email, phone, cpf_cnpj);
+        const newClient = await clientsService.criar(name, email, phone, cpf_cnpj);
         return res.status(201).json(newClient);
     } catch (error) {
         console.error("Erro em clientsController.criar:", error);
