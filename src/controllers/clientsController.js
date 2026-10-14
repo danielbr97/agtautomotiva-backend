@@ -13,25 +13,23 @@ const listar = async (req, res) => {
 
 // Controller chamando Service criar cliente
 const criar = async (req, res) => {
-    const { name, email, phone, cpf_cnpj } = req.body; // Pega os dados enviados pelo Front-end
+    const { name, email, phone, cpf_cnpj } = req.body;
     
     if (!name || !email || !phone || !cpf_cnpj) {
         return res.status(400).json({ erro: 'Nome, email, CPF/CNPJ e telefone são obrigatórios' });
     }
 
     try {
-        // Passa os dados limpos para o serviço tratar
         const newClient = await clientsService.criar(name, email, phone, cpf_cnpj);
         return res.status(201).json(newClient);
     } catch (error) {
         console.error("Erro em clientsController.criar:", error);
 
-        // Trata o erro de negócio específico disparado pelo Service
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ erro: 'Este e-mail já está cadastrado' });
+            return res.status(409).json({ error: 'Este e-mail já está cadastrado' });
         }
 
-        return res.status(500).json({ erro: 'Erro interno ao salvar usuário' });
+        return res.status(500).json({ error: 'Erro interno ao salvar usuário' });
     }
 };
 
