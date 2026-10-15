@@ -1,20 +1,27 @@
 const jwt = require('jsonwebtoken');
-
+const db = require('../database');
+const bcrypt = require('bcryptjs');
 const SECRET_KEY = process.env.JWT_SECRET;
 
-const login = async (username, password) => {
+const login = async (email, password) => {
 
-    // Consulta ao banco de dados de usuários a ser feita
-    if (username === 'daniboy' && password === '86765674') {
-        const payload = { id: 1, user: 'admin' };
+    const user = await db.query('SELECT id, password FROM users WHERE email = $1;', [email]);
 
-        const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-
-        return { autenticated: true, token };
-    }else{
+    if (!user) {
         throw new Error('USER_PASSWORD_INVALID');
     }
-    
+
+    const senhaValida = await bcrypt.compare(password, user.password);
+
+    if (!senhaValida) {
+        throw new Error('USER_PASSWORD_INVALID');
+    }
+
+    const payload = { id: user.id, user: 'admin' };
+
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
+
+    return { autenticated: true, token };
 }
 
 module.exports = { 
