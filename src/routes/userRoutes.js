@@ -12,6 +12,6 @@ router.use(validateJWT);
 
 router.post('/new', userController.createUser);
 router.post('/changepass', userController.changePassword);
-router.post('/updateuser', userController.updateuser);
+router.post('/updateuser', userController.updateUser);
 
 module.exports = router;

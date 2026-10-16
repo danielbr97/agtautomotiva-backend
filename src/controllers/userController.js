@@ -42,7 +42,7 @@ const changePassword = async (req, res) => {
     }
 }
 
-const updateuser = async (req, res) => {
+const updateUser = async (req, res) => {
     const { first_name, last_name, email, newemail } = req.body;
 
     if(!first_name || !last_name || !email || !newemail){
@@ -50,7 +50,7 @@ const updateuser = async (req, res) => {
     }
 
     try {
-        const newUser = await userService.updateuser(first_name, last_name, email, newemail);
+        const newUser = await userService.updateUser(first_name, last_name, email, newemail);
         return res.status(201).json(newUser);
     } catch (error) {
         console.error("Erro em userController.createUser:", error);
@@ -66,5 +66,5 @@ const updateuser = async (req, res) => {
 module.exports = {
     createUser,
     changePassword,
-    updateuser
+    updateUser
 }

@@ -51,7 +51,7 @@ const updateUser = async (first_name, last_name, email, newemail) => {
     return resultado.rows[0];
 }
 
-module.exports= {
+module.exports = {
     createUser,
     changePassword,
     updateUser
