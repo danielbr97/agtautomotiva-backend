@@ -30,7 +30,7 @@ const deletar = async (id) =>{
     const resultado = await db.query(sql, [id]);
 
     if (resultado.rowCount === 0) {
-        return { erro: 'cliente não encontrado' };
+        return { erro: 'Cliente não encontrado' };
     }
 
     return { mensagem: `Cliente ${id} deletado com sucesso!` };

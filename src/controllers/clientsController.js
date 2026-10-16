@@ -16,7 +16,7 @@ const criar = async (req, res) => {
     const { name, email, phone, cpf_cnpj } = req.body;
     
     if (!name || !email || !phone || !cpf_cnpj) {
-        return res.status(400).json({ erro: 'Nome, email, CPF/CNPJ e telefone são obrigatórios' });
+        return res.status(400).json({ error: 'Nome, email, CPF/CNPJ e telefone são obrigatórios' });
     }
 
     try {
@@ -41,7 +41,7 @@ const deletar = async (req, res) =>{
         const resultado = await clientsService.query(id);
 
         if (resultado == 'cliente não encontrado') {
-            return res.status(404).json({ erro: 'cliente não encontrado' });
+            return res.status(404).json({ erro: 'Cliente não encontrado' });
         }
 
         res.json({ mensagem: `Cliente ${id} deletado com sucesso!` });
