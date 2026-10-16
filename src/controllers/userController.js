@@ -38,8 +38,6 @@ const changePassword = async (req, res) => {
             return res.status(404).json({ error: 'Usuário ou senha incorreto.'});
         }
 
-
-
         return res.status(500).json({ error: 'Erro interno ao salvar usuário' });
     }
 }

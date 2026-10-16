@@ -24,7 +24,7 @@ const changePassword = async (email, password, newpassword) => {
         throw new Error('USER_NOT_FOUND');
     }
 
-    const senhaValida = await bcrypt.compare(password, user.password);
+    const senhaValida = await bcrypt.compare(password, user.rows[0].password);
 
     if (!senhaValida) {
         throw new Error('USER_PASSWORD_INVALID');
@@ -33,7 +33,7 @@ const changePassword = async (email, password, newpassword) => {
     const saltRounds = 10;
     const senhaHash = await bcrypt.hash(newpassword, saltRounds);
     const sql = 'UPDATE users SET password = $1 WHERE id = $2';
-    const resultado = await db.query(sql, [senhaHash, user.id]);
+    const resultado = await db.query(sql, [senhaHash, user.rows[0].id]);
 
     return resultado.rows[0];
 }
