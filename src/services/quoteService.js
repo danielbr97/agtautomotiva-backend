@@ -100,84 +100,82 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
 
 const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, items_quote) => {
     
-    const client = await db.query('SELECT name, cpf_cnpj, phone, email FROM clients WHERE id = $1',[client_id]);
-    const vehicle = await db.query('SELECT plate, model FROM vehicles WHERE id = $1',[vehicle_id]);
-    const user = await db.query('SELECT full_name FROM users WHERE id = $1',[user_id]);
+    const clientDb = await db.connect();
 
-    if (!client.rows[0] || !vehicle.rows[0] || !user.rows[0]) {
-        throw new Error('RECORD_RELATED_NOT_FOUND');
+    try {
+        await clientDb.query('BEGIN');
+
+        const [clientRes, vehicleRes, userRes] = await Promise.all([
+            clientDb.query('SELECT name, cpf_cnpj, phone, email FROM clients WHERE id = \$1', [client_id]),
+            clientDb.query('SELECT plate, model FROM vehicles WHERE id = \$1', [vehicle_id]),
+            clientDb.query('SELECT full_name FROM users WHERE id = \$1', [user_id])
+        ]);
+
+        if (!clientRes.rows[0] || !vehicleRes.rows[0] || !userRes.rows[0]) {
+            throw new Error('RECORD_RELATED_NOT_FOUND');
+        }
+
+        const client_name = clientRes.rows[0].name;
+        const client_cpf_cnpj = clientRes.rows[0].cpf_cnpj;
+        const client_phone = clientRes.rows[0].phone;
+        const client_email = clientRes.rows[0].email;
+        const vehicle_plate = vehicleRes.rows[0].plate;
+        const vehicle_model = vehicleRes.rows[0].model;
+        const user_name = userRes.rows[0].full_name;
+
+        const sqlQuote = `
+            INSERT INTO quotes (
+                date_quote, date_start, date_delivery, client_id, vehicle_id, user_id,
+                client_name, client_cpf_cnpj, client_phone, client_email, vehicle_plate, vehicle_model, user_name,
+                status
+            ) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
+            RETURNING *;
+        `;
+        
+        const quoteResult = await clientDb.query(sqlQuote, [
+            date_quote, date_start, date_delivery, client_id, vehicle_id, user_id,
+            client_name, client_cpf_cnpj, client_phone, client_email, vehicle_plate, vehicle_model, user_name,
+            "Pendente"
+        ]);
+
+        const quoteId = quoteResult.rows[0].id;
+
+        items_quote.forEach(element => {
+            element.quote_id = quoteId;
+        });
+
+        const valores = items_quote.flatMap(item => [
+            item.description,
+            item.amount,
+            item.unit_value,
+            item.total_value,
+            item.type,
+            item.quote_id
+        ]);
+
+        const marcadores = items_quote.map((_, index) => {
+            const baseIndex = index * 6;
+            return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6})`;
+        }).join(', ');
+
+        const sqlItemsQuote = `
+            INSERT INTO items_quote (description, amount, unit_value, total_value, type, quote_id) 
+            VALUES ${marcadores} 
+            RETURNING id
+        `;
+        
+        await clientDb.query(sqlItemsQuote, valores);
+
+        await clientDb.query('COMMIT');
+
+    } catch (error) {
+        await clientDb.query('ROLLBACK');
+        throw error;
+    } finally {
+        clientDb.release();
     }
 
-    const client_name = client.rows[0].name;
-    const client_cpf_cnpj = client.rows[0].cpf_cnpj;
-    const client_phone = client.rows[0].phone;
-    const client_email = client.rows[0].email;
-    const vehicle_plate = vehicle.rows[0].plate;
-    const vehicle_model = vehicle.rows[0].model;
-    const user_name = user.rows[0].full_name;
-
-    const sqlQuote = `
-        INSERT INTO quotes (
-            date_quote, 
-            date_start, 
-            date_delivery, 
-            client_id, 
-            vehicle_id, 
-            user_id,
-            client_name, 
-            client_cpf_cnpj, 
-            client_phone, 
-            client_email, 
-            vehicle_plate, 
-            vehicle_model, 
-            user_name,
-            status
-        ) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
-        RETURNING *;
-    `;
-    const quoteResult = await db.query(sqlQuote, [
-        date_quote, 
-        date_start, 
-        date_delivery, 
-        client_id, 
-        vehicle_id, 
-        user_id,
-        client_name, 
-        client_cpf_cnpj, 
-        client_phone, 
-        client_email, 
-        vehicle_plate, 
-        vehicle_model,
-        user_name,
-        "Pendente"
-    ]);
-
-    items_quote.forEach(element => {
-        element.quote_id = quoteResult.rows[0].id;
-    });
-
-    const valores = items_quote.flatMap(item => [
-        item.description,
-        item.amount,
-        item.unit_value,
-        item.total_value,
-        item.type,
-        item.quote_id
-    ]);
-
-    const marcadores = items_quote.map((_, index) => {
-        const baseIndex = index * 6;
-        return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6})`;
-    }).join(', ');
-
-    const sqlItemsQuote = `
-        INSERT INTO items_quote (description, amount, unit_value, total_value, type, quote_id) 
-        VALUES ${marcadores} 
-        RETURNING id
-    `;
-    
-    await db.query(sqlItemsQuote, valores);
 };
 
 const deletar = async (id) =>{
