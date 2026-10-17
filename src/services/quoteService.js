@@ -25,30 +25,32 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         i.total_value AS items_quote_total_value,
         i.type AS items_quote_type
         FROM quotes q
-        FULL JOIN items_quote c ON i.quote_id = q.id
+        FULL JOIN items_quote i ON i.quote_id = q.id
+        WHERE 1=1
     `;
 
-    if(status){
-        queryquote += ' WHERE status = '+status;
-    }
-    if(id){
-        if(queryquote.includes('WHERE')) queryquote += ' AND id = '+id;
-        else queryquote += ' WHERE id = '+id;
-    }
-    if(client_cpf_cnpj){
-        if(queryquote.includes('WHERE')) queryquote += ' AND client_cpf_cnpj = '+client_cpf_cnpj;
-        else queryquote += ' WHERE client_cpf_cnpj = '+client_cpf_cnpj;
-    }
-    if(client_name){
-        if(queryquote.includes('WHERE')) queryquote += ' AND client_name = '+client_name;
-        else queryquote += ' WHERE client_name = '+client_name;
-    }
-    if(vehicle_plate){
-        if(queryquote.includes('WHERE')) queryquote += ' AND vehicle_plate = '+vehicle_plate;
-        else queryquote += ' WHERE vehicle_plate = '+vehicle_plate;
-    }
+    const valores = [];
 
-    console.log('queryquote -> ',queryquote);
+    if (status) {
+        valores.push(status);
+        queryquote += ` AND q.status = $${valores.length}`;
+    }
+    if (id) {
+        valores.push(id);
+        queryquote += ` AND q.id = $${valores.length}`;
+    }
+    if (client_cpf_cnpj) {
+        valores.push(client_cpf_cnpj);
+        queryquote += ` AND q.client_cpf_cnpj = $${valores.length}`;
+    }
+    if (client_name) {
+        valores.push(`%${client_name}%`);
+        queryquote += ` AND q.client_name ILIKE $${valores.length}`;
+    }
+    if (vehicle_plate) {
+        valores.push(vehicle_plate);
+        queryquote += ` AND q.vehicle_plate = $${valores.length}`;
+    }
 
     const resultado = await db.query(queryquote);
 

@@ -1,6 +1,6 @@
 const db = require('../database');
 
-const listar = async (id, cpf_cnpj, email, phone) => {
+const listar = async (id, cpf_cnpj, email, phone, name) => {
 
     let queryClient = `
         SELECT
@@ -13,23 +13,30 @@ const listar = async (id, cpf_cnpj, email, phone) => {
         v.model AS vehicle_model,
         v.id AS vehicle_id
         FROM clients c
-        FULL JOIN vehicles v ON v.client_id = c.id;
+        FULL JOIN vehicles v ON v.client_id = c.id
+        WHERE 1=1
     `;
 
-    if(id){
-        queryClient += ' AND id = '+id;
+    const valores = [];
+    if (id) {
+        valores.push(id);
+        queryClient += ` AND c.id = $${valores.length}`;
     }
-    if(cpf_cnpj){
-        if(queryClient.includes('WHERE')) queryClient += ' AND cpf_cnpj = '+cpf_cnpj;
-        else queryClient += ' WHERE cpf_cnpj = '+cpf_cnpj;
+    if (cpf_cnpj) {
+        valores.push(cpf_cnpj);
+        queryClient += ` AND c.cpf_cnpj = $${valores.length}`;
     }
-    if(email){
-        if(queryClient.includes('WHERE')) queryClient += ' AND email = '+email;
-        else queryClient += ' WHERE email = '+email;
+    if (name) {
+        valores.push(`%${name}%`);
+        queryClient += ` AND c.name ILIKE $${valores.length}`;
     }
-    if(phone){
-        if(queryClient.includes('WHERE')) queryClient += ' AND phone = '+phone;
-        else queryClient += ' WHERE phone = '+phone;
+    if (email) {
+        valores.push(email);
+        queryClient += ` AND c.email = $${valores.length}`;
+    }
+    if (phone) {
+        valores.push(phone);
+        queryClient += ` AND c.phone = $${valores.length}`;
     }
 
     const resultado = await db.query(queryClient);
