@@ -1,58 +1,71 @@
 const clientsService = require('../services/clientsService');
 
-// Controller chamando Service listar clientes
-const listar = async (req, res) => {
+const listarTodos = async (req, res) => {
     try {
-        const clients = await clientsService.listar();
+        const clients = await clientsService.listarTodos();
         return res.json(clients);
     } catch (error) {
-        console.error("Erro em clientsContrller.listar:", error);
+        console.error("Erro em clientsController.listar:", error);
         return res.status(500).json({ erro: 'Erro interno ao buscar clientes' });
     }
 };
 
-// Controller chamando Service criar cliente
 const criar = async (req, res) => {
     const { name, email, phone, cpf_cnpj } = req.body;
     
     if (!name || !email || !phone || !cpf_cnpj) {
-        return res.status(400).json({ error: 'Nome, email, CPF/CNPJ e telefone são obrigatórios' });
+        return res.status(400).json({ success: false, error: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
     }
 
     try {
-        const newClient = await clientsService.criar(name, email, phone, cpf_cnpj);
-        return res.status(201).json(newClient);
+        await clientsService.criar(name, email, phone, cpf_cnpj);
+        return res.status(201).json({success: true, message: 'Cliente criado com sucesso'});
+    } catch (error) {
+        console.error("Erro em clientsController.criar:", error);
+
+        if (error.message === 'CLIENT_ALREADY_EXISTS') {
+            return res.status(409).json({ success: false, error: 'CNPJ/CPF já está cadastrado' });
+        }
+
+        return res.status(500).json({ success: false, error: 'Erro interno ao criar cliente' });
+    }
+};
+
+const atualizar = async (req, res) => {
+    const { name, email, phone, cpf_cnpj } = req.body;
+    
+    if (!name || !email || !phone || !cpf_cnpj) {
+        return res.status(400).json({ success: false, error: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
+    }
+
+    try {
+        await clientsService.atualizar(name, email, phone, cpf_cnpj);
+        return res.status(201).json({ success: true, message: 'Cliente atualizado com sucesso'});
     } catch (error) {
         console.error("Erro em clientsController.criar:", error);
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ error: 'Este e-mail já está cadastrado' });
+            return res.status(409).json({ success: false, error: 'Este e-mail já está cadastrado' });
         }
 
-        return res.status(500).json({ error: 'Erro interno ao salvar usuário' });
+        return res.status(500).json({ success: false, error: 'Erro interno ao salvar cliente' });
     }
 };
 
-// Controller chamando deletar cliente
 const deletar = async (req, res) =>{
-    const { id } = req.params; // Pega o ID da URL
+    const { id } = req.params;
     
     try {
-        const resultado = await clientsService.query(id);
-
-        if (resultado == 'cliente não encontrado') {
-            return res.status(404).json({ erro: 'Cliente não encontrado' });
-        }
-
-        res.json({ mensagem: `Cliente ${id} deletado com sucesso!` });
+        await clientsService.deletar(id);
+        res.json({ sucess: true, mensage: 'Cliente deletado com sucesso!' });
     } catch (error) {
-        res.status(500).json({ erro: 'Erro ao deletar cliente' });
+        res.status(500).json({ success: false, message: 'Erro ao deletar cliente' });
     }
-}
+};
 
-// Exportamos as funções como um objeto para a Route usar
 module.exports = {
-    listar,
+    listarTodos,
     criar,
-    deletar
+    deletar,
+    atualizar
 };

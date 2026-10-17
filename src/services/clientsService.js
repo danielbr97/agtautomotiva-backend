@@ -1,44 +1,61 @@
-const db = require('../database'); // Conexão com o Neon
+const db = require('../database');
 
-const listar = async () => {
-    const resultado = await db.query('SELECT * FROM clients ORDER BY id DESC;');
+const listarTodos = async () => {
+
+    const resultado = await db.query(`
+        SELECT
+        c.id AS client_id,
+        c.name AS client_name,
+        c.cpf_cnpj AS client_cpf_cnpj,
+        c.phone AS client_phone,
+        v.plate AS vehicle_plate,
+        v.model AS vehicle_model
+        FROM clients c
+        INNER JOIN vehicles v ON c.id = v.client_id;
+    `);
+
     return resultado.rows;
 };
 
-// Função para criar cliente
 const criar = async (name, email, phone, cpf_cnpj) => {
 
-    // Verificar se o e-mail já está cadastrado
-    const clientExistente = await db.query('SELECT id FROM clients WHERE email = $1;', [email]);
+    const clientExistente = await db.query('SELECT id FROM clients WHERE cpf_cnpj = $1;', [cpf_cnpj]);
     
     if (clientExistente.rowCount > 0) {
-        // Dispara um erro específico caso o e-mail já exista no Neon
+        throw new Error('CLIENT_ALREADY_EXISTS');
+    }
+
+    const sql = 'INSERT INTO clients (name, email, phone, cpf_cnpj) VALUES ($1, $2, $3, $4) RETURNING *;';
+    await db.query(sql, [name, email, phone, cpf_cnpj]);
+};
+
+const atualizar = async (name, email, phone, cpf_cnpj) => {
+    const clientExistente = await db.query('SELECT id FROM clients WHERE cpf_cnpj != $1 AND email = $2;', [cpf_cnpj, email]);
+    
+    if (clientExistente.rowCount > 0) {
         throw new Error('EMAIL_ALREADY_EXISTS');
     }
 
-    // Se passou na validação, insere no banco
-    const sql = 'INSERT INTO clients (name, email, phone, cpf_cnpj) VALUES ($1, $2, $3, $4) RETURNING *;';
+    const sql = 'UPDATE clients SET name = $1, email = $2, phone = $3 WHERE cpf_cnpj = $4;';
     const resultado = await db.query(sql, [name, email, phone, cpf_cnpj]);
     
-    return resultado.rows[0]; // Retorna apenas o objeto do cliente criado
-};
+    return resultado.rows[0];
+}
 
-// Função para deletar cliente
 const deletar = async (id) =>{
     
     const sql = 'DELETE FROM clients WHERE id = \$1 RETURNING id;';
     const resultado = await db.query(sql, [id]);
 
     if (resultado.rowCount === 0) {
-        return { erro: 'Cliente não encontrado' };
+        throw new Error('CLIENT_NOT_FOUND');
     }
-
-    return { mensagem: `Cliente ${id} deletado com sucesso!` };
 }
 
-// Exportamos as funções como um objeto para a Route usar
+
 module.exports = {
-    listar,
+    listarTodos,
     criar,
+    atualizar,
     deletar
 };
