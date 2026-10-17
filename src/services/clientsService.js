@@ -2,7 +2,7 @@ const db = require('../database');
 
 const listar = async (id, cpf_cnpj, email, phone) => {
 
-    const queryClient = `
+    let queryClient = `
         SELECT
         c.id AS client_id,
         c.name AS client_name,
