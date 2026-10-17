@@ -84,7 +84,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         }
 
         if (linha.items_quote_id) {
-            clientsMap[linha.quote_id].items_quote.push({
+            quotesMap[linha.quote_id].items_quote.push({
                 id: linha.items_quote_id,
                 description: linha.items_quote_description,
                 amount: linha.items_quote_amount,
