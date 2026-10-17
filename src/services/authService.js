@@ -7,7 +7,7 @@ const login = async (email, password) => {
 
     const user = await db.query('SELECT id, password, full_name FROM users WHERE email = $1;', [email]);
 
-    if (!user) {
+    if (user.rowCount <= 0) {
         throw new Error('USER_PASSWORD_INVALID');
     }
     
