@@ -171,7 +171,7 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
     }).join(', ');
 
     const sqlItemsQuote = `
-        INSERT INTO items_quote (description, amount, unit_value, type) 
+        INSERT INTO items_quote (description, amount, unit_value, type, quote_id) 
         VALUES ${marcadores} 
         RETURNING id
     `;
