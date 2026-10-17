@@ -8,6 +8,7 @@ const listarTodos = async () => {
         c.name AS client_name,
         c.cpf_cnpj AS client_cpf_cnpj,
         c.phone AS client_phone,
+        c.email AS client_email
         v.plate AS vehicle_plate,
         v.model AS vehicle_model,
         v.id AS vehicle_id
@@ -73,7 +74,7 @@ const atualizar = async (name, email, phone, cpf_cnpj) => {
 const deletar = async (id) =>{
 
     const resultado = await db.query('DELETE FROM clients WHERE id = $1 RETURNING id;', [id]);
-    
+
     if (resultado.rowCount === 0) {
         throw new Error('CLIENT_NOT_FOUND');
     }
