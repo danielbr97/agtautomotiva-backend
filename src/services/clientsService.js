@@ -13,7 +13,7 @@ const listar = async (id, cpf_cnpj, email, phone) => {
         v.model AS vehicle_model,
         v.id AS vehicle_id
         FROM clients c
-        INNER JOIN vehicles v ON v.client_id = c.id;
+        FULL JOIN vehicles v ON v.client_id = c.id;
     `;
 
     if(id){
