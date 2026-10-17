@@ -48,6 +48,8 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         else queryquote += ' WHERE vehicle_plate = '+vehicle_plate;
     }
 
+    console.log('queryquote -> ',queryquote);
+
     const resultado = await db.query(queryquote);
 
     if(resultado.rowCount <= 0){
