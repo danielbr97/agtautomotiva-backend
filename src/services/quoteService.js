@@ -102,7 +102,7 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
     
     const client = await db.query('SELECT name, cpf_cnpj, phone, email FROM clients WHERE id = $1',[client_id]);
     const vehicle = await db.query('SELECT plate, model FROM vehicles WHERE id = $1',[vehicle_id]);
-    const user = await db.query('SELECT full_name FROM user WHERE id = $1',[user_id]);
+    const user = await db.query('SELECT full_name FROM users WHERE id = $1',[user_id]);
 
     if (!client.rows[0] || !vehicle.rows[0] || !user.rows[0]) {
         throw new Error('RECORD_RELATED_NOT_FOUND');
