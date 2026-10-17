@@ -23,6 +23,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         i.description AS items_quote_description,
         i.amount AS items_quote_amount,
         i.total_value AS items_quote_total_value,
+        i.unit_value AS items_quote_unit_value,
         i.type AS items_quote_type
         FROM quotes q
         FULL JOIN items_quote i ON i.quote_id = q.id
@@ -88,6 +89,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
                 description: linha.items_quote_description,
                 amount: linha.items_quote_amount,
                 total_value: linha.items_quote_total_value,
+                unit_value: linha.items_quote_unit_value,
                 type: linha.items_quote_type
             });
         }
@@ -101,6 +103,10 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
     const client = await db.query('SELECT name, cpf_cnpj, phone, email FROM clients WHERE id = $1',[client_id]);
     const vehicle = await db.query('SELECT plate, model FROM vehicles WHERE id = $1',[vehicle_id]);
     const user = await db.query('SELECT full_name FROM user WHERE id = $1',[user_id]);
+
+    if (!client.rows[0] || !vehicle.rows[0] || !user.rows[0]) {
+        throw new Error('RECORD_RELATED_NOT_FOUND');
+    }
 
     const sqlQuote = `
         INSERT INTO quotes (
@@ -128,13 +134,13 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         client_id, 
         vehicle_id, 
         user_id,
-        client.row[0].name, 
-        client.row[0].cpf_cnpj, 
-        client.row[0].phone, 
-        client.row[0].email, 
-        vehicle.row[0].plate, 
-        vehicle.row[0].model, 
-        user.row[0].full_name
+        client.rows[0].name, 
+        client.rows[0].cpf_cnpj, 
+        client.rows[0].phone, 
+        client.rows[0].email, 
+        vehicle.rows[0].plate, 
+        vehicle.rows[0].model, 
+        user.rows[0].full_name
     ]);
 
     itens_quote.forEach(element => {

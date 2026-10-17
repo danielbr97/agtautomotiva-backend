@@ -30,6 +30,10 @@ const criar = async (req, res) => {
     } catch (error) {
         console.error("Erro em quoteController.criar:", error);
 
+        if(error.message == 'RECORD_RELATED_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Registro relacionado não encontrado' });
+        }
+
         return res.status(500).json({ success: false, message: 'Erro interno ao salvar cotação' });
     }
 };
