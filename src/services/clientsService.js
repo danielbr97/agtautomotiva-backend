@@ -17,6 +17,10 @@ const listarTodos = async () => {
 
     const clientsMap = {};
 
+    if(resultado.rowCount <= 0){
+        return { success: true, message: "Não possui clientes na base"}
+    }
+    
     resultado.rows.forEach(linha => {
 
         if (!clientsMap[linha.client_id]) {
@@ -40,7 +44,7 @@ const listarTodos = async () => {
 
     console.log('clientsMap -> ',clientsMap);
 
-    return JSON.stringify(Object.values(clientsMap));
+    return Object.values(clientsMap);
 };
 
 const criar = async (name, email, phone, cpf_cnpj) => {
