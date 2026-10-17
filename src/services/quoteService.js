@@ -155,8 +155,26 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         element.quote_id = quoteResult.rows[0].id;
     });
 
-    const sqlItemsQuote = 'INSERT INTO items_quote (description, amount, total_value, quote_id) VALUES ? RETURNING *;';
-    await db.query(sqlItemsQuote, [itens_quote]);
+    const valores = itensQuote.flatMap(item => [
+        item.description,
+        item.amount,
+        item.unit_value,
+        item.type,
+        item.quote_id
+    ]);
+
+    const marcadores = itensQuote.map((_, index) => {
+        const baseIndex = index * 5;
+        return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5})`;
+    }).join(', ');
+
+    const sqlItemsQuote = `
+        INSERT INTO itens_quote (description, amount, unit_value, type) 
+        VALUES ${marcadores} 
+        RETURNING id
+    `;
+    
+    await db.query(sqlItemsQuote, valores);
 };
 
 const deletar = async (id) =>{
