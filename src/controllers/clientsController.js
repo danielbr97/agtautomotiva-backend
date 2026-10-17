@@ -53,7 +53,7 @@ const atualizar = async (req, res) => {
 };
 
 const deletar = async (req, res) =>{
-    const { id } = req.params;
+    const { id } = req.query;
     
     console.log('id -> ',id);
 
