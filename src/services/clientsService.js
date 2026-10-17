@@ -9,12 +9,38 @@ const listarTodos = async () => {
         c.cpf_cnpj AS client_cpf_cnpj,
         c.phone AS client_phone,
         v.plate AS vehicle_plate,
-        v.model AS vehicle_model
+        v.model AS vehicle_model,
+        v.id AS vehicle_id
         FROM clients c
-        INNER JOIN vehicles v ON c.id = v.client_id;
+        INNER JOIN vehicles v ON v.client_id = c.id;
     `);
 
-    return resultado.rows;
+    const clientsMap = {};
+
+    resultado.rows.forEach(linha => {
+
+        if (!clientsMap[linha.client_id]) {
+            clientsMap[linha.client_id] = {
+                id: linha.client_id,
+                name: linha.client_name,
+                cpf_cnpj: linha.client_cpf_cnpj,
+                phone: linha.client_phone,
+                vehicles: []
+            };
+        }
+
+        if (linha.vehicle_id) {
+            clientsMap[linha.client_id].vehicles.push({
+                id: linha.vehicle_id,
+                model: linha.vehicle_model,
+                plate: linha.vehicle_plate
+            });
+        }
+    });
+
+    console.log('clientsMap -> ',clientsMap);
+
+    return JSON.stringify(Object.values(clientsMap));
 };
 
 const criar = async (name, email, phone, cpf_cnpj) => {

@@ -3,6 +3,7 @@ const clientsService = require('../services/clientsService');
 const listarTodos = async (req, res) => {
     try {
         const clients = await clientsService.listarTodos();
+        console.log('clients -> ',clients);
         return res.json(clients);
     } catch (error) {
         console.error("Erro em clientsController.listar:", error);
