@@ -42,8 +42,6 @@ const listarTodos = async () => {
         }
     });
 
-    console.log('clientsMap -> ',clientsMap);
-
     return Object.values(clientsMap);
 };
 
