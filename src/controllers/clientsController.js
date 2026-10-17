@@ -59,6 +59,11 @@ const deletar = async (req, res) =>{
         await clientsService.deletar(id);
         res.json({ sucess: true, mensage: 'Cliente deletado com sucesso!' });
     } catch (error) {
+
+        if(error.message === 'CLIENT_NOT_FOUND'){
+            res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+        }
+
         res.status(500).json({ success: false, message: 'Erro ao deletar cliente' });
     }
 };
