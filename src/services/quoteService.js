@@ -130,9 +130,10 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
             client_email, 
             vehicle_plate, 
             vehicle_model, 
-            user_name
+            user_name,
+            status
         ) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
         RETURNING *;
     `;
     const quoteResult = await db.query(sqlQuote, [
@@ -148,14 +149,15 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         client_email, 
         vehicle_plate, 
         vehicle_model,
-        user_name
+        user_name,
+        "Pendente"
     ]);
 
     itens_quote.forEach(element => {
         element.quote_id = quoteResult.rows[0].id;
     });
 
-    const valores = itensQuote.flatMap(item => [
+    const valores = itens_quote.flatMap(item => [
         item.description,
         item.amount,
         item.unit_value,
@@ -163,7 +165,7 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         item.quote_id
     ]);
 
-    const marcadores = itensQuote.map((_, index) => {
+    const marcadores = itens_quote.map((_, index) => {
         const baseIndex = index * 5;
         return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5})`;
     }).join(', ');
