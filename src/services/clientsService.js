@@ -8,7 +8,7 @@ const listarTodos = async () => {
         c.name AS client_name,
         c.cpf_cnpj AS client_cpf_cnpj,
         c.phone AS client_phone,
-        c.email AS client_email
+        c.email AS client_email,
         v.plate AS vehicle_plate,
         v.model AS vehicle_model,
         v.id AS vehicle_id

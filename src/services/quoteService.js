@@ -9,7 +9,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         q.date_start AS quote_date_start,
         q.date_delivery AS quote_date_delivery,
         q.status AS quote_status,
-        q.client_name AS quote_client_name
+        q.client_name AS quote_client_name,
         q.client_cpf_cnpj AS quote_client_cpf_cnpj,
         q.client_phone AS quote_client_phone,
         q.client_email AS quote_client_email,
@@ -23,7 +23,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         i.description AS items_quote_description,
         i.amount AS items_quote_amount,
         i.total_value AS items_quote_total_value,
-        i.type AS items_quote_type,
+        i.type AS items_quote_type
         FROM quotes q
         FULL JOIN items_quote c ON i.quote_id = q.id
     `;

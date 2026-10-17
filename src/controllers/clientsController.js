@@ -5,7 +5,7 @@ const listarTodos = async (req, res) => {
         const clients = await clientsService.listarTodos();
         return res.json(clients);
     } catch (error) {
-        console.error("Erro em clientsController.listar:", error);
+        console.error("Erro em clientsController.listarTodos:", error);
         return res.status(500).json({ erro: 'Erro interno ao buscar clientes' });
     }
 };
