@@ -39,7 +39,7 @@ const listar = async (id, cpf_cnpj, email, phone, name) => {
         queryClient += ` AND c.phone = $${valores.length}`;
     }
 
-    const resultado = await db.query(queryClient);
+    const resultado = await db.query(queryClient, valores);
 
     if(resultado.rowCount <= 0){
         throw new Error('CLIENT_NOT_FOUND');

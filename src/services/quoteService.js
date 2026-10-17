@@ -52,7 +52,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         queryquote += ` AND q.vehicle_plate = $${valores.length}`;
     }
 
-    const resultado = await db.query(queryquote);
+    const resultado = await db.query(queryquote, valores);
 
     if(resultado.rowCount <= 0){
         throw new Error('QUOTE_NOT_FOUND');
