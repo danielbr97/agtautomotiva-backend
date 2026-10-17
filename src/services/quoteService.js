@@ -108,6 +108,14 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         throw new Error('RECORD_RELATED_NOT_FOUND');
     }
 
+    const client_name = client.rows[0].name;
+    const client_cpf_cnpj = client.rows[0].cpf_cnpj;
+    const client_phone = client.rows[0].phone;
+    const client_email = client.rows[0].email;
+    const vehicle_plate = vehicle.rows[0].plate;
+    const vehicle_model = vehicle.rows[0].model;
+    const user_name = user.rows[0].full_name;
+
     const sqlQuote = `
         INSERT INTO quotes (
             date_quote, 
@@ -134,13 +142,13 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         client_id, 
         vehicle_id, 
         user_id,
-        client.rows[0].name, 
-        client.rows[0].cpf_cnpj, 
-        client.rows[0].phone, 
-        client.rows[0].email, 
-        vehicle.rows[0].plate, 
-        vehicle.rows[0].model, 
-        user.rows[0].full_name
+        client_name, 
+        client_cpf_cnpj, 
+        client_phone, 
+        client_email, 
+        vehicle_plate, 
+        vehicle_model,
+        user_name
     ]);
 
     itens_quote.forEach(element => {
