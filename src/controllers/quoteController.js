@@ -18,14 +18,14 @@ const listar = async (req, res) => {
 };
 
 const criar = async (req, res) => {
-    const { date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, itens_quote } = req.body;
+    const { date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, items_quote } = req.body;
     
-    if (!date_quote || !date_start || !date_delivery || !client_id || !vehicle_id || !user_id || !itens_quote) {
+    if (!date_quote || !date_start || !date_delivery || !client_id || !vehicle_id || !user_id || !items_quote) {
         return res.status(400).json({ success: false, message: 'Campos obrigatórios não preenchido' });
     }
 
     try {
-        await quoteService.criar(date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, itens_quote);
+        await quoteService.criar(date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, items_quote);
         return res.status(201).json({ success: true, message: 'Cotação criada com sucesso'});
     } catch (error) {
         console.error("Erro em quoteController.criar:", error);

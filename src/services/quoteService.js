@@ -98,7 +98,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
     return Object.values(quotesMap);
 };
 
-const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, itens_quote) => {
+const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, items_quote) => {
     
     const client = await db.query('SELECT name, cpf_cnpj, phone, email FROM clients WHERE id = $1',[client_id]);
     const vehicle = await db.query('SELECT plate, model FROM vehicles WHERE id = $1',[vehicle_id]);
@@ -153,11 +153,11 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         "Pendente"
     ]);
 
-    itens_quote.forEach(element => {
+    items_quote.forEach(element => {
         element.quote_id = quoteResult.rows[0].id;
     });
 
-    const valores = itens_quote.flatMap(item => [
+    const valores = items_quote.flatMap(item => [
         item.description,
         item.amount,
         item.unit_value,
@@ -165,13 +165,13 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         item.quote_id
     ]);
 
-    const marcadores = itens_quote.map((_, index) => {
+    const marcadores = items_quote.map((_, index) => {
         const baseIndex = index * 5;
         return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5})`;
     }).join(', ');
 
     const sqlItemsQuote = `
-        INSERT INTO itens_quote (description, amount, unit_value, type) 
+        INSERT INTO items_quote (description, amount, unit_value, type) 
         VALUES ${marcadores} 
         RETURNING id
     `;
