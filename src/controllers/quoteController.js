@@ -6,6 +6,7 @@ const listar = async (req, res) => {
         const quotes = await quoteService.listar(status, id, client_cpf_cnpj, client_name, vehicle_plate);
         return res.json(quotes);
     } catch (error) {
+        console.error("Erro em quoteController.listar:", error);
 
         if(error.message == 'QUOTE_NOT_FOUND'){
             return res.status(404).json({ success: false, message: "Cotação não encontrada"});
@@ -40,6 +41,8 @@ const deletar = async (req, res) =>{
         await quoteService.deletar(id);
         res.json({ success: true, message: 'Cotação deletada com sucesso' });
     } catch (error) {
+        console.error("Erro em quoteController.deletar:", error);
+
         if (error.message == 'QUOTE_NOT_FOUND') {
             return res.status(404).json({ sucess: false, message: 'Cotação não encontrada' });
         }
