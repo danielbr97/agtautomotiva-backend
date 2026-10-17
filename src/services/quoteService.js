@@ -168,7 +168,7 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
 
     const marcadores = items_quote.map((_, index) => {
         const baseIndex = index * 6;
-        return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}), $${baseIndex + 6})`;
+        return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6})`;
     }).join(', ');
 
     const sqlItemsQuote = `
