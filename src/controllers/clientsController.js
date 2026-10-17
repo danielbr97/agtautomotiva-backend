@@ -55,6 +55,8 @@ const atualizar = async (req, res) => {
 const deletar = async (req, res) =>{
     const { id } = req.params;
     
+    console.log('id -> ',id);
+
     try {
         await clientsService.deletar(id);
         res.json({ sucess: true, mensage: 'Cliente deletado com sucesso!' });

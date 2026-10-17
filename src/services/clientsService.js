@@ -73,6 +73,7 @@ const atualizar = async (name, email, phone, cpf_cnpj) => {
 const deletar = async (id) =>{
     
     const sql = 'DELETE FROM clients WHERE id = $1 RETURNING id;';
+    console.log('sql -> ',sql);
     const resultado = await db.query(sql, [id]);
 
     if (resultado.rowCount === 0) {
