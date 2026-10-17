@@ -5,7 +5,7 @@ const clientsController = require('../controllers/clientsController');
 const { validateJWT } = require('../middlewares/auth');
 
 router.use(validateJWT);
-router.get('/getall', clientsController.listarTodos);
+router.get('/get', clientsController.listar);
 router.post('/create', clientsController.criar);
 router.post('/update', clientsController.atualizar);
 router.delete('/delete', clientsController.deletar);

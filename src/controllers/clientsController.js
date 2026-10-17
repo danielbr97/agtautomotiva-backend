@@ -1,11 +1,18 @@
 const clientsService = require('../services/clientsService');
 
-const listarTodos = async (req, res) => {
+const listar = async (req, res) => {
+    const { id, cpf_cnpj, email, phone } = req.query;
+
     try {
-        const clients = await clientsService.listarTodos();
+        const clients = await clientsService.listar(id, cpf_cnpj, email, phone);
         return res.json(clients);
     } catch (error) {
-        console.error("Erro em clientsController.listarTodos:", error);
+        console.error("Erro em clientsController.listar:", error);
+
+        if(error.message == 'CLIENT_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+        }
+
         return res.status(500).json({ erro: 'Erro interno ao buscar clientes' });
     }
 };
@@ -42,7 +49,7 @@ const atualizar = async (req, res) => {
         await clientsService.atualizar(name, email, phone, cpf_cnpj);
         return res.status(201).json({ success: true, message: 'Cliente atualizado com sucesso'});
     } catch (error) {
-        console.error("Erro em clientsController.criar:", error);
+        console.error("Erro em clientsController.atualizar:", error);
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
             return res.status(409).json({ success: false, error: 'Este e-mail já está cadastrado' });
@@ -57,19 +64,20 @@ const deletar = async (req, res) =>{
 
     try {
         await clientsService.deletar(id);
-        res.json({ sucess: true, mensage: 'Cliente deletado com sucesso!' });
+        return res.json({ sucess: true, mensage: 'Cliente deletado com sucesso!' });
     } catch (error) {
+        console.error("Erro em clientsController.deletar:", error);
 
         if(error.message === 'CLIENT_NOT_FOUND'){
-            res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+            return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
         }
 
-        res.status(500).json({ success: false, message: 'Erro ao deletar cliente' });
+        return res.status(500).json({ success: false, message: 'Erro ao deletar cliente' });
     }
 };
 
 module.exports = {
-    listarTodos,
+    listar,
     criar,
     deletar,
     atualizar

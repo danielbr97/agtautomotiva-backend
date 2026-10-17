@@ -1,8 +1,8 @@
 const db = require('../database');
 
-const listarTodos = async () => {
+const listar = async (id, cpf_cnpj, email, phone) => {
 
-    const resultado = await db.query(`
+    const queryClient = `
         SELECT
         c.id AS client_id,
         c.name AS client_name,
@@ -14,14 +14,31 @@ const listarTodos = async () => {
         v.id AS vehicle_id
         FROM clients c
         INNER JOIN vehicles v ON v.client_id = c.id;
-    `);
+    `;
 
-    const clientsMap = {};
+    if(id){
+        queryClient += ' AND id = '+id;
+    }
+    if(cpf_cnpj){
+        if(queryClient.includes('WHERE')) queryClient += ' AND cpf_cnpj = '+cpf_cnpj;
+        else queryClient += ' WHERE cpf_cnpj = '+cpf_cnpj;
+    }
+    if(email){
+        if(queryClient.includes('WHERE')) queryClient += ' AND email = '+email;
+        else queryClient += ' WHERE email = '+email;
+    }
+    if(phone){
+        if(queryClient.includes('WHERE')) queryClient += ' AND phone = '+phone;
+        else queryClient += ' WHERE phone = '+phone;
+    }
+
+    const resultado = await db.query(queryClient);
 
     if(resultado.rowCount <= 0){
-        return { success: true, message: "Não possui clientes na base"}
+        throw new Error('CLIENT_NOT_FOUND');
     }
-    
+
+    const clientsMap = {};
     resultado.rows.forEach(linha => {
 
         if (!clientsMap[linha.client_id]) {
@@ -82,7 +99,7 @@ const deletar = async (id) =>{
 
 
 module.exports = {
-    listarTodos,
+    listar,
     criar,
     atualizar,
     deletar
