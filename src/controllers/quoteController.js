@@ -38,6 +38,27 @@ const criar = async (req, res) => {
     }
 };
 
+const atualizarStatus = async (req, res) => {
+    const { id, status } = req.body;
+    
+    if (!id || !status) {
+        return res.status(400).json({ success: false, message: 'Id e Status são obrigatórios' });
+    }
+
+    try {
+        await quoteService.criar(id, status);
+        return res.status(201).json({ success: true, message: 'Cotação atualizada com sucesso'});
+    } catch (error) {
+        console.error("Erro em quoteController.criar:", error);
+
+        if(error.message == 'QUOTE_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Cotação não encontrada' });
+        }
+
+        return res.status(500).json({ success: false, message: 'Erro interno ao atualizar cotação' });
+    }
+};
+
 const deletar = async (req, res) =>{
     const { id } = req.query; 
     
@@ -58,5 +79,6 @@ const deletar = async (req, res) =>{
 module.exports = {
     listar,
     criar,
-    deletar
+    deletar,
+    atualizarStatus
 };

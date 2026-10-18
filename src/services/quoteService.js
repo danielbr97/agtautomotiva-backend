@@ -187,6 +187,19 @@ const deletar = async (id) =>{
     }
 };
 
+const atualizarStatus = async (id, status) =>{
+    const quoteExistente = await db.query('SELECT id FROM quotes WHERE id = $1;', [id]);
+        
+    if (quoteExistente.rowCount <= 0) {
+        throw new Error('QUOTE_NOT_FOUND');
+    }
+
+    const sql = 'UPDATE quote SET status = $1 WHERE id = $2;';
+    const resultado = await db.query(sql, [status, id]);
+    
+    return resultado.rows[0];
+}
+
 module.exports = {
     listar,
     criar,
