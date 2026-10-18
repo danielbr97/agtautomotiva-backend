@@ -14,7 +14,7 @@ const createUser = async (req, res) => {
         console.error("Erro em userController.createUser:", error);
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ error: 'Este e-mail já está cadastrado' });
+            return res.status(409).json({ error: 'Este e-mail já está cadastrado ('+error.full_name+')' });
         }
 
         return res.status(500).json({ error: 'Erro interno ao salvar usuário' });
@@ -55,10 +55,10 @@ const updateUser = async (req, res) => {
         const newUser = await userService.updateUser(first_name, last_name, email, newemail);
         return res.status(201).json(newUser);
     } catch (error) {
-        console.error("Erro em userController.createUser:", error);
+        console.error("Erro em userController.updateUser:", error);
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ error: 'Este e-mail já está cadastrado' });
+            return res.status(409).json({ error: 'Este e-mail já está cadastrado ('+error.full_name+')' });
         }
 
         return res.status(500).json({ error: 'Erro interno ao salvar usuário' });
