@@ -48,7 +48,7 @@ const updateUser = async (first_name, last_name, email, newemail) => {
         throw erro;
     }
 
-    const sql = 'UPDATE users SET COALESCE(1$, first_name), COALESCE(2$, last_name), email = $3 WHERE email = $4';
+    const sql = 'UPDATE users SET first_name = COALESCE(1$, first_name), last_name = COALESCE(2$, last_name), email = $3 WHERE email = $4';
     const resultado = await db.query(sql, [first_name, last_name, newemail, email]);
 
     return resultado.rows[0];
