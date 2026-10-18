@@ -2,7 +2,7 @@ const db = require('../database');
 const bcrypt = require('bcryptjs');
 
 const createUser = async (first_name, last_name, email, password) => {
-    const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [newemail]);
+    const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [email]);
 
     if (userDuplicated.rowCount > 0) {
         const erro = new Error("EMAIL_ALREADY_EXISTS");
