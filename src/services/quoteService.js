@@ -194,7 +194,7 @@ const atualizarStatus = async (id, status) =>{
         throw new Error('QUOTE_NOT_FOUND');
     }
 
-    const sql = 'UPDATE quote SET status = $1 WHERE id = $2;';
+    const sql = 'UPDATE quotes SET status = $1 WHERE id = $2;';
     const resultado = await db.query(sql, [status, id]);
     
     return resultado.rows[0];
