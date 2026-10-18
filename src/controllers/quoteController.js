@@ -46,10 +46,10 @@ const atualizarStatus = async (req, res) => {
     }
 
     try {
-        await quoteService.criar(id, status);
+        await quoteService.atualizarStatus(id, status);
         return res.status(201).json({ success: true, message: 'Cotação atualizada com sucesso'});
     } catch (error) {
-        console.error("Erro em quoteController.criar:", error);
+        console.error("Erro em quoteController.atualizarStatus:", error);
 
         if(error.message == 'QUOTE_NOT_FOUND'){
             return res.status(404).json({ success: false, message: 'Cotação não encontrada' });
