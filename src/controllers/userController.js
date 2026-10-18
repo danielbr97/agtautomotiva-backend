@@ -45,8 +45,10 @@ const changePassword = async (req, res) => {
 const updateUser = async (req, res) => {
     const { first_name, last_name, email, newemail } = req.body;
 
-    if(!first_name || !last_name || !email || !newemail){
-        return res.status(400).json({ error: 'Nome, Sobrenome e Email são obrigatórios'});
+    if(!email){
+        return res.status(400).json({ error: 'E-mail é obrigatório'});
+    }else if(!first_name && !last_name && !newemail){
+        return res.status(400).json({ error: 'Primeiro Nome ou Sobrenome ou Novo E-mail precisa estar preenchido'});
     }
 
     try {
