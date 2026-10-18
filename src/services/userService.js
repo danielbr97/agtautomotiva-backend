@@ -33,22 +33,34 @@ const changePassword = async (email, password, newpassword) => {
 
     const saltRounds = 10;
     const senhaHash = await bcrypt.hash(newpassword, saltRounds);
-    const sql = 'UPDATE users SET password = $1 WHERE id = $2';
-    const resultado = await db.query(sql, [senhaHash, user.rows[0].id]);
+    const sql = 'UPDATE users SET password = $1 WHERE email = $2';
+    const resultado = await db.query(sql, [senhaHash, email]);
 
     return resultado.rows[0];
 }
 
 const updateUser = async (first_name, last_name, email, newemail) => {
-    const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [newemail]);
 
-    if (userDuplicated.rowCount > 0) {
-        const erro = new Error("EMAIL_ALREADY_EXISTS");
-        erro.full_name = userDuplicated.rows[0].first_name + ' ' + userDuplicated.rows[0].last_name;
-        throw erro;
+    if(newemail){
+        const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [newemail]);
+
+        if (userDuplicated.rowCount > 0) {
+            const erro = new Error("EMAIL_ALREADY_EXISTS");
+            erro.full_name = userDuplicated.rows[0].first_name + ' ' + userDuplicated.rows[0].last_name;
+            throw erro;
+        }
     }
-
-    const sql = 'UPDATE users SET first_name = COALESCE(1$, first_name), last_name = COALESCE(2$, last_name), email = $3 WHERE email = $4';
+    
+    console.log('passou da validação');
+    const sql = `
+        UPDATE users 
+        SET 
+            first_name = COALESCE($1, first_name), 
+            last_name = COALESCE($2, last_name),
+            email = COALESCE($3, email)
+        WHERE email = $4
+    `;
+    console.log('QUERIE');
     const resultado = await db.query(sql, [first_name, last_name, newemail, email]);
 
     return resultado.rows[0];
