@@ -203,5 +203,6 @@ const atualizarStatus = async (id, status) =>{
 module.exports = {
     listar,
     criar,
-    deletar
+    deletar,
+    atualizarStatus
 };
