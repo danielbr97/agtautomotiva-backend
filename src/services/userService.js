@@ -6,7 +6,7 @@ const createUser = async (first_name, last_name, email, password) => {
 
     if (userDuplicated.rowCount > 0) {
         const erro = new Error("EMAIL_ALREADY_EXISTS");
-        erro.full_name = userDuplicated.row[0].first_name + ' ' + userDuplicated.row[0].last_name;
+        erro.full_name = userDuplicated.rows[0].first_name + ' ' + userDuplicated.rows[0].last_name;
         throw erro;
     }
     
@@ -44,7 +44,7 @@ const updateUser = async (first_name, last_name, email, newemail) => {
 
     if (userDuplicated.rowCount > 0) {
         const erro = new Error("EMAIL_ALREADY_EXISTS");
-        erro.full_name = userDuplicated.row[0].first_name + ' ' + userDuplicated.row[0].last_name;
+        erro.full_name = userDuplicated.rows[0].first_name + ' ' + userDuplicated.rows[0].last_name;
         throw erro;
     }
 
