@@ -84,7 +84,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
                 vehicle_color: linha.quote_vehicle_color,
                 vehicle_manufacturer: linha.quote_vehicle_manufacturer,
                 vehicle_current_kilometer: linha.quote_vehicle_current_kilometer,
-                vehicle_gas_level: linhaquote_vehicle_gas_level,
+                vehicle_gas_level: linha.quote_vehicle_gas_level,
                 user_name : linha.quote_user_name,
                 client_id : linha.quote_client_id,
                 vehicle_id : linha.quote_vehicle_id,
