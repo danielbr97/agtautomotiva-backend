@@ -2,12 +2,10 @@ const db = require('../database');
 const bcrypt = require('bcryptjs');
 
 const createUser = async (first_name, last_name, email, password) => {
-    const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [email]);
+    const userDuplicated = await db.query('SELECT id FROM users WHERE email = $1;', [email]);
 
     if (userDuplicated.rowCount > 0) {
-        const erro = new Error("EMAIL_ALREADY_EXISTS");
-        erro.full_name = userDuplicated.rows[0].first_name + ' ' + userDuplicated.rows[0].last_name;
-        throw erro;
+        throw new Error();
     }
     
     const saltRounds = 10;

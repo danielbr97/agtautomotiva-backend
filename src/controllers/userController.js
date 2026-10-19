@@ -58,7 +58,7 @@ const updateUser = async (req, res) => {
         console.error("Erro em userController.updateUser:", error);
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ success: false, message: 'Este e-mail já está cadastrado ('+error.full_name+')' });
+            return res.status(409).json({ success: false, message: 'Este e-mail já está cadastrado' });
         }
 
         return res.status(500).json({ success: false, message: 'Erro interno ao atualizar usuário' });
