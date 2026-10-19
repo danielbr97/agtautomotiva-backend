@@ -155,7 +155,7 @@ const atualizarEndereco = async (postal_code, street, number_address, complement
             neighborhood = COALESCE($6, neighborhood),
             city = COALESCE($7, city),
             state = COALESCE($8, state),
-            country = COALESCE($9, country),
+            country = COALESCE($9, country)
         WHERE cpf_cnpj = $10;
     `;
     await db.query(sql, [postal_code, street, number_address, complement , neighborhood, city, state, country, cpf_cnpj]);
