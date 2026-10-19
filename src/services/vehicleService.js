@@ -49,32 +49,17 @@ const listar = async (id, plate, client_id, chassi, manufacturer) => {
 
 const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
 
-    const vehicleDb = await db.connect();
-
-    const [vehiclePlateExists, vehicleChassiExists] = await Promise.all([
-        vehicleDb.query(`
-            SELECT 
-            v.id AS vehicle_id,
-            v.plate AS vehicle_plate,
-            v.manufacturer AS vehicle_manufacturer,
-            v.model AS vehicle_model,
-            c.name AS client_name
-            FROM vehicles v
-            INNER JOIN clients c ON v.client_id = c.id
-            WHERE v.plate = \$1;
-        `, [plate]),
-        vehicleDb.query(`
-            SELECT 
-            v.id AS vehicle_id,
-            v.plate AS vehicle_plate,
-            v.manufacturer AS vehicle_manufacturer,
-            v.model AS vehicle_model,
-            c.name AS client_name
-            FROM vehicles v
-            INNER JOIN clients c ON v.client_id = c.id
-            WHERE v.chassi = \$1;
-        `, [chassi]),
-    ]);
+    const vehiclePlateExists = db.query(`
+        SELECT 
+        v.id AS vehicle_id,
+        v.plate AS vehicle_plate,
+        v.manufacturer AS vehicle_manufacturer,
+        v.model AS vehicle_model,
+        c.name AS client_name
+        FROM vehicles v
+        INNER JOIN clients c ON v.client_id = c.id
+        WHERE v.plate = $1;
+    `, [plate]);
     
     if (vehiclePlateExists.rowCount > 0) {
         const errorHandled = new Error('PLATE_ALREADY_EXISTS');
@@ -83,17 +68,6 @@ const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
         errorHandled.vehicle_plate = vehiclePlateExists.rows[0].vehicle_plate;
         errorHandled.vehicle_manufacturer = vehiclePlateExists.rows[0].vehicle_manufacturer;
         errorHandled.vehicle_model = vehiclePlateExists.rows[0].vehicle_model;
-
-        throw errorHandled;
-    }
-    if (vehicleChassiExists.rowCount > 0) {
-        const errorHandled = new Error('PLATE_ALREADY_EXISTS');
-        errorHandled.vehicle_id = vehicleChassiExists.rows[0].vehicle_id;
-        errorHandled.vehicle_client_name = vehicleChassiExists.rows[0].client_name;
-        errorHandled.vehicle_plate = vehicleChassiExists.rows[0].vehicle_plate;
-        errorHandled.vehicle_manufacturer = vehicleChassiExists.rows[0].vehicle_manufacturer;
-        errorHandled.vehicle_model = vehicleChassiExists.rows[0].vehicle_model;
-
         throw errorHandled;
     }
 
