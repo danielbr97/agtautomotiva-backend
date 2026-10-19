@@ -19,6 +19,9 @@ const listar = async (id, cpf_cnpj, email, phone, name) => {
         c.country AS client_country,
         v.plate AS vehicle_plate,
         v.model AS vehicle_model,
+        v.chassi AS vehicle_chassi,
+        v.manufacturer AS vehicle_manufacturer,
+        v.color AS vehicle_color,
         v.id AS vehicle_id
         FROM clients c
         FULL JOIN vehicles v ON v.client_id = c.id
@@ -78,7 +81,10 @@ const listar = async (id, cpf_cnpj, email, phone, name) => {
             clientsMap[linha.client_id].vehicles.push({
                 id: linha.vehicle_id,
                 model: linha.vehicle_model,
-                plate: linha.vehicle_plate
+                plate: linha.vehicle_plate,
+                chassi: linha.vehicle_chassi,
+                color: linha.vehicle_color,
+                manufacturer : linha.vehicle_manufacturer
             });
         }
     });
