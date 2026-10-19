@@ -44,7 +44,7 @@ const listar = async (id, plate, client_id, chassi, manufacturer) => {
         throw new Error('VEHICLE_NOT_FOUND');
     }
 
-    return resultado;
+    return resultado.rows;
 };
 
 const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
