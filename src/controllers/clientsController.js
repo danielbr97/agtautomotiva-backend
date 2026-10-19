@@ -21,11 +21,11 @@ const criar = async (req, res) => {
     const { name, email, phone, cpf_cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country } = req.body;
     
     if (!name || !email || !phone || !cpf_cnpj) {
-        return res.status(400).json({ success: false, error: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
+        return res.status(400).json({ success: false, message: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
     }
 
     if(postal_code, street, number_address, neighborhood, city, state, country){
-        return res.status(400).json({ success: false, error: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
+        return res.status(400).json({ success: false, message: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
     }
 
     try {
@@ -35,14 +35,14 @@ const criar = async (req, res) => {
         console.error("Erro em clientsController.criar:", error);
 
         if (error.message === 'CLIENT_CPFNPJ_ALREADY_EXISTS') {
-            return res.status(409).json({ success: false, error: 'CNPJ/CPF já está cadastrado' });
+            return res.status(409).json({ success: false, message: 'CNPJ/CPF já está cadastrado' });
         }
 
         if (error.message === 'CLIENT_EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ success: false, error: 'E-mail já está cadastrado' });
+            return res.status(409).json({ success: false, message: 'E-mail já está cadastrado' });
         }
 
-        return res.status(500).json({ success: false, error: 'Erro interno ao criar cliente' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao criar cliente' });
     }
 };
 
@@ -50,9 +50,9 @@ const atualizarCliente = async (req, res) => {
     const { name, email, phone, cpf_cnpj } = req.body;
     
     if (!cpf_cnpj) {
-        return res.status(400).json({ success: false, error: 'CPF/CNPJ é obrigatório' });
+        return res.status(400).json({ success: false, message: 'CPF/CNPJ é obrigatório' });
     }else if(!name && !email && !phone){
-        return res.status(400).json({ success: false, error: 'Nome ou E-mail ou Telefone precisa estar preenchido' });
+        return res.status(400).json({ success: false, message: 'Nome ou E-mail ou Telefone precisa estar preenchido' });
     }
 
     try {
@@ -66,10 +66,10 @@ const atualizarCliente = async (req, res) => {
         }
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ success: false, error: 'Este e-mail já está cadastrado' });
+            return res.status(409).json({ success: false, message: 'Este e-mail já está cadastrado' });
         }
 
-        return res.status(500).json({ success: false, error: 'Erro interno ao salvar cliente' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao salvar cliente' });
     }
 };
 
@@ -78,11 +78,11 @@ const atualizarEndereco = async (req, res) => {
     const { postal_code, street, number_address, complement , neighborhood, city, state, country, cpf_cnpj } = req.body;
     
     if (!cpf_cnpj) {
-        return res.status(400).json({ success: false, error: 'CPF/CNPJ é obrigatório' });
+        return res.status(400).json({ success: false, message: 'CPF/CNPJ é obrigatório' });
     }
 
     if (!postal_code || !street || !number_address || !neighborhood || !city || !state || !country || !cpf_cnpj) {
-        return res.status(400).json({ success: false, error: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
+        return res.status(400).json({ success: false, message: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
     }
 
     try {
@@ -95,7 +95,7 @@ const atualizarEndereco = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
         }
 
-        return res.status(500).json({ success: false, error: 'Erro interno ao salvar endereço do cliente' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao salvar endereço do cliente' });
     }
 }
 
