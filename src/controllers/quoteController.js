@@ -72,7 +72,7 @@ const deletar = async (req, res) =>{
             return res.status(404).json({ sucess: false, message: 'Cotação não encontrada' });
         }
 
-        res.status(500).json({ erro: 'Erro ao deletar cotação' });
+        res.status(500).json({ success: false, message: 'Erro interno ao deletar cotação' });
     }
 };
 

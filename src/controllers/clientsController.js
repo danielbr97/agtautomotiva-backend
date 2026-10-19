@@ -13,7 +13,7 @@ const listar = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
         }
 
-        return res.status(500).json({ erro: 'Erro interno ao buscar clientes' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao buscar clientes' });
     }
 };
 
@@ -112,7 +112,7 @@ const deletar = async (req, res) =>{
             return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
         }
 
-        return res.status(500).json({ success: false, message: 'Erro ao deletar cliente' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao deletar cliente' });
     }
 };
 
