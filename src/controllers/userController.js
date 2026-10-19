@@ -53,6 +53,8 @@ const updateUser = async (req, res) => {
         return res.status(400).json({ success: false, message: 'E-mail é obrigatório'});
     }else if(!first_name && !last_name && !newemail && !access_level){
         return res.status(400).json({ success: false, message: 'Primeiro Nome ou Sobrenome ou Novo E-mail ou Nível de Acesso precisa estar preenchido'});
+    }else if(email === newemail){
+        return res.status(400).json({ success: false, message: 'Novo e-mail não pode ser igual ao que já está cadastrado'});
     }
 
     try {
