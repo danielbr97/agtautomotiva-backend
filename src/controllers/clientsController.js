@@ -61,6 +61,10 @@ const atualizarCliente = async (req, res) => {
     } catch (error) {
         console.error("Erro em clientsController.atualizarCliente:", error);
 
+        if(error.message == 'CLIENT_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+        }
+
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
             return res.status(409).json({ success: false, error: 'Este e-mail já está cadastrado' });
         }
@@ -86,6 +90,10 @@ const atualizarEndereco = async (req, res) => {
         return res.status(201).json({ success: true, message: 'Endereço de cliente atualizado com sucesso'});
     } catch (error) {
         console.error("Erro em clientsController.atualizarEndereco:", error);
+
+        if(error.message == 'CLIENT_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
+        }
 
         return res.status(500).json({ success: false, error: 'Erro interno ao salvar endereço do cliente' });
     }

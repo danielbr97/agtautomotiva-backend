@@ -124,6 +124,12 @@ const criar = async (name, email, phone, cpf_cnpj, postal_code, street, number_a
 
 const atualizarCliente = async (name, email, phone, cpf_cnpj) => {
 
+    const clientExists = await db.query('SELECT id FROM clients WHERE cpf_cnpj = $1;', [cpf_cnpj]);
+
+    if(clientExists.rowCount <= 0){
+        throw new Error('CLIENT_NOT_FOUND');
+    }
+
     if(!email){
         const clientExistente = await db.query('SELECT id FROM clients WHERE cpf_cnpj != $1 AND email = $2;', [cpf_cnpj, email]);
     
@@ -145,18 +151,24 @@ const atualizarCliente = async (name, email, phone, cpf_cnpj) => {
 
 const atualizarEndereco = async (postal_code, street, number_address, complement , neighborhood, city, state, country, cpf_cnpj) => {
 
+    const clientExists = await db.query('SELECT id FROM clients WHERE cpf_cnpj = $1;', [cpf_cnpj]);
+
+    if(clientExists.rowCount <= 0){
+        throw new Error('CLIENT_NOT_FOUND');
+    }
+    
     const sql = `
         UPDATE clients 
         SET 
             postal_code = COALESCE($1, postal_code), 
             street = COALESCE($2, street), 
             number_address = COALESCE($3, number_address),
-            complement = COALESCE($5, complement),
-            neighborhood = COALESCE($6, neighborhood),
-            city = COALESCE($7, city),
-            state = COALESCE($8, state),
-            country = COALESCE($9, country)
-        WHERE cpf_cnpj = $10;
+            complement = COALESCE($4, complement),
+            neighborhood = COALESCE($5, neighborhood),
+            city = COALESCE($6, city),
+            state = COALESCE($7, state),
+            country = COALESCE($8, country)
+        WHERE cpf_cnpj = $9;
     `;
     await db.query(sql, [postal_code, street, number_address, complement , neighborhood, city, state, country, cpf_cnpj]);
 };
