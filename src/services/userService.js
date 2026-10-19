@@ -41,15 +41,11 @@ const updateUser = async (first_name, last_name, email, newemail) => {
 
     if(newemail){
         const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [newemail]);
-
         if (userDuplicated.rowCount > 0) {
-            const erro = new Error("EMAIL_ALREADY_EXISTS");
-            erro.full_name = userDuplicated.rows[0].first_name + ' ' + userDuplicated.rows[0].last_name;
-            throw erro;
+            throw new Error();
         }
     }
     
-    console.log('passou da validação');
     const sql = `
         UPDATE users 
         SET 
@@ -58,7 +54,7 @@ const updateUser = async (first_name, last_name, email, newemail) => {
             email = COALESCE($3, email)
         WHERE email = $4
     `;
-    console.log('QUERIE');
+    
     const resultado = await db.query(sql, [first_name, last_name, newemail, email]);
 
     return resultado.rows[0];

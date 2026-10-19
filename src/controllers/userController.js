@@ -13,10 +13,6 @@ const createUser = async (req, res) => {
     } catch (error) {
         console.error("Erro em userController.createUser:", error);
 
-        if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ success: false, message: 'Este e-mail já está cadastrado ('+error.full_name+')' });
-        }
-
         return res.status(500).json({ success: false, message: 'Erro interno ao criar usuário' });
     }
 }
@@ -56,10 +52,6 @@ const updateUser = async (req, res) => {
         return res.status(201).json({success: true, message: 'Usuário criado com sucesso'});
     } catch (error) {
         console.error("Erro em userController.updateUser:", error);
-
-        if (error.message === 'EMAIL_ALREADY_EXISTS') {
-            return res.status(409).json({ success: false, message: 'Este e-mail já está cadastrado' });
-        }
 
         return res.status(500).json({ success: false, message: 'Erro interno ao atualizar usuário' });
     }
