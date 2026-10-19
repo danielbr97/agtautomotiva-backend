@@ -17,6 +17,10 @@ const createUser = async (first_name, last_name, email, password, access_level) 
 const changePassword = async (email, password, newpassword) => {
     const user = await db.query('SELECT id, password FROM users WHERE email = $1;', [email]);
 
+    if(password === newpassword){
+        throw new Error('PASSWORD_SAME_NEW_PASSWORD');
+    }
+
     if (user.rowCount <= 0) {
         throw new Error('USER_NOT_FOUND');
     }

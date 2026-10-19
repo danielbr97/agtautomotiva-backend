@@ -38,6 +38,10 @@ const changePassword = async (req, res) => {
             return res.status(404).json({success: false, message: 'Usuário ou senha incorreto.'});
         }
 
+        if(error.message === 'PASSWORD_SAME_NEW_PASSWORD'){
+            return res.status(400).json({success: false, message: 'Senha não pode ser igual à nova senha'});
+        }
+
         return res.status(500).json({ success: false, message: 'Erro interno ao alterar senha do usuário' });
     }
 }
