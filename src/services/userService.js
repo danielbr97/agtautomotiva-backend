@@ -5,7 +5,7 @@ const createUser = async (first_name, last_name, email, password) => {
     const userDuplicated = await db.query('SELECT id FROM users WHERE email = $1;', [email]);
 
     if (userDuplicated.rowCount > 0) {
-        throw new Error();
+        throw new Error("EMAIL_ALREADY_EXISTS");
     }
     
     const saltRounds = 10;
@@ -41,8 +41,9 @@ const updateUser = async (first_name, last_name, email, newemail) => {
 
     if(newemail){
         const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [newemail]);
+
         if (userDuplicated.rowCount > 0) {
-            throw new Error();
+            throw new Error("EMAIL_ALREADY_EXISTS");
         }
     }
     
@@ -54,7 +55,6 @@ const updateUser = async (first_name, last_name, email, newemail) => {
             email = COALESCE($3, email)
         WHERE email = $4
     `;
-    
     const resultado = await db.query(sql, [first_name, last_name, newemail, email]);
 
     return resultado.rows[0];
