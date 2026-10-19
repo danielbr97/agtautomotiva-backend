@@ -77,22 +77,24 @@ const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
     ]);
     
     if (vehiclePlateExists.rowCount > 0) {
-        throw new Error('PLATE_ALREADY_EXISTS', { 
-            "vehicle_id": vehiclePlateExists.rows[0].vehicle_id, 
-            "vehicle_client_name": vehiclePlateExists.rows[0].client_name,
-            "vehicle_plate": vehiclePlateExists.rows[0].vehicle_plate,
-            "vehicle_manufacturer": vehiclePlateExists.rows[0].vehicle_manufacturer,
-            "vehicle_model": vehiclePlateExists.rows[0].vehicle_model,
-        });
+        const errorHandled = new Error('PLATE_ALREADY_EXISTS');
+        errorHandled.vehicle_id = vehiclePlateExists.rows[0].vehicle_id;
+        errorHandled.vehicle_client_name = vehiclePlateExists.rows[0].client_name;
+        errorHandled.vehicle_plate = vehiclePlateExists.rows[0].vehicle_plate;
+        errorHandled.vehicle_manufacturer = vehiclePlateExists.rows[0].vehicle_manufacturer;
+        errorHandled.vehicle_model = vehiclePlateExists.rows[0].vehicle_model;
+
+        throw errorHandled;
     }
     if (vehicleChassiExists.rowCount > 0) {
-        throw new Error('CHASSI_ALREADY_EXISTS', {
-            "vehicle_id": vehicleChassiExists.rows[0].vehicle_id, 
-            "vehicle_client_name": vehicleChassiExists.rows[0].client_name,
-            "vehicle_plate": vehicleChassiExists.rows[0].vehicle_plate,
-            "vehicle_manufacturer": vehicleChassiExists.rows[0].vehicle_manufacturer,
-            "vehicle_model": vehicleChassiExists.rows[0].vehicle_model,
-        });
+        const errorHandled = new Error('PLATE_ALREADY_EXISTS');
+        errorHandled.vehicle_id = vehicleChassiExists.rows[0].vehicle_id;
+        errorHandled.vehicle_client_name = vehicleChassiExists.rows[0].client_name;
+        errorHandled.vehicle_plate = vehicleChassiExists.rows[0].vehicle_plate;
+        errorHandled.vehicle_manufacturer = vehicleChassiExists.rows[0].vehicle_manufacturer;
+        errorHandled.vehicle_model = vehicleChassiExists.rows[0].vehicle_model;
+
+        throw errorHandled;
     }
 
     const sql = `
@@ -108,7 +110,7 @@ const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
 };
 
 const atualizarVeiculo = async (plate, model, chassi, manufacturer, color) => {
-    
+
     const sql = `
         UPDATE vehicles 
         SET

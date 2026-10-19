@@ -9,6 +9,6 @@ router.get('/get', vehicleController.listar);
 router.post('/create', vehicleController.criar);
 router.delete('/delete', vehicleController.deletar);
 router.post('updateVehicle', vehicleController.atualizarVeiculo);
-router.post('updateClient', vehicleController.atualizarVeiculo);
+router.post('updateClient', vehicleController.atualizarCliente);
 
 module.exports = router;
