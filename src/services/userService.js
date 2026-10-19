@@ -49,7 +49,7 @@ const updateUser = async (first_name, last_name, email, newemail, access_level) 
             first_name = COALESCE($1, first_name), 
             last_name = COALESCE($2, last_name),
             email = COALESCE($3, email),
-            access_level COALESCE($4, access_level)
+            access_level = COALESCE($4, access_level)
         WHERE email = $5
     `;
     await db.query(sql, [first_name, last_name, newemail, access_level, email ]);
