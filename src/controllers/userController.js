@@ -24,6 +24,10 @@ const createUser = async (req, res) => {
 const changePassword = async (req, res) => {
     const { email, password, newpassword } = req.body;
 
+    if(password === newpassword){
+        return res.status(400).json({success: false, message: 'Senha não pode ser igual à nova senha'});
+    }
+
     if(!email || !password || !newpassword){
         return res.status(400).json({ success: false, message: 'Email, Senha e Nova Senha são obrigatórios'});
     }
@@ -36,10 +40,6 @@ const changePassword = async (req, res) => {
 
         if(error.message === 'USER_NOT_FOUND' || error.message === 'USER_PASSWORD_INVALID'){
             return res.status(404).json({success: false, message: 'Usuário ou senha incorreto.'});
-        }
-
-        if(error.message === 'PASSWORD_SAME_NEW_PASSWORD'){
-            return res.status(400).json({success: false, message: 'Senha não pode ser igual à nova senha'});
         }
 
         return res.status(500).json({ success: false, message: 'Erro interno ao alterar senha do usuário' });
