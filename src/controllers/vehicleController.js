@@ -1,10 +1,10 @@
 const vehicleService = require('../services/vehicleService');
 
 const listar = async (req, res) => {
-    const { id, plate, client_id, cpf_cnpj, email, chassi, manufacturer } = req.query;
+    const { id, plate, client_id, chassi, manufacturer } = req.query;
 
     try {
-        const vehicles = await vehicleService.listar(id, plate, client_id, cpf_cnpj, email, chassi, manufacturer);
+        const vehicles = await vehicleService.listar(id, plate, client_id, chassi, manufacturer);
         return res.json(vehicles);
     } catch (error) {
         console.error("Erro em vehicleController.listar:", error);

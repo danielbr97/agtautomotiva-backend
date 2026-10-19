@@ -1,25 +1,24 @@
 const db = require('../database');
 
-const listar = async (id, plate, client_id, cpf_cnpj, email, chassi, manufacturer) => {
+const listar = async (id, plate, client_id, chassi, manufacturer) => {
 
     let queryVehicle = `
         SELECT
-        v.plate AS vehicle_plate,
-        v.model AS vehicle_model,
-        v.id AS vehicle_id
-        v.client_id AS vehicle_client_id
-        v.chassi AS vehicle_chassi,
-        v.manufacturer AS vehicle_manufacturer,
-        v.color AS vehicle_color
-        FROM vehicles v
-        INNER JOIN vehicles v ON v.client_id = c.id
+        plate,
+        model,
+        id,
+        client_id,
+        chassi,
+        manufacturer,
+        color
+        FROM vehicles
         WHERE 1=1
     `;
 
     const valores = [];
     if (id) {
         valores.push(id);
-        queryVehicle += ` AND v.id = $${valores.length}`;
+        queryVehicle += ` v.id = $${valores.length}`;
     }
     if (plate) {
         valores.push(plate);
@@ -37,14 +36,6 @@ const listar = async (id, plate, client_id, cpf_cnpj, email, chassi, manufacture
         valores.push(client_id);
         queryVehicle += ` AND v.client_id = $${valores.length}`;
     }
-    if (cpf_cnpj) {
-        valores.push(cpf_cnpj);
-        queryVehicle += ` AND c.cpf_cnpj = $${valores.length}`;
-    }
-    if (email) {
-        valores.push(email);
-        queryVehicle += ` AND c.email = $${valores.length}`;
-    }
     
 
     const resultado = await db.query(queryVehicle, valores);
@@ -53,21 +44,7 @@ const listar = async (id, plate, client_id, cpf_cnpj, email, chassi, manufacture
         throw new Error('VEHICLE_NOT_FOUND');
     }
 
-    const vehicleArray = [];
-    resultado.rows.forEach(linha => {
-
-        vehicleArray.push({
-            id: linha.vehicle_id,
-            model: linha.vehicle_model,
-            plate: linha.vehicle_plate,
-            chassi: linha.vehicle_chassi,
-            manufacturer: linha.vehicle_manufacturer,
-            color: linha.vehicle_color,
-            client_id: linha.vehicle_client_id
-        });
-    });
-
-    return Object.values(vehicleArray);
+    return resultado;
 };
 
 const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
