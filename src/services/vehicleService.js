@@ -18,23 +18,23 @@ const listar = async (id, plate, client_id, chassi, manufacturer) => {
     const valores = [];
     if (id) {
         valores.push(id);
-        queryVehicle += ` v.id = $${valores.length}`;
+        queryVehicle += ` id = $${valores.length}`;
     }
     if (plate) {
         valores.push(plate);
-        queryVehicle += ` AND v.plate = $${valores.length}`;
+        queryVehicle += ` AND plate = $${valores.length}`;
     }
     if (chassi) {
         valores.push(chassi);
-        queryVehicle += ` AND v.chassi = $${valores.length}`;
+        queryVehicle += ` AND chassi = $${valores.length}`;
     }
     if (manufacturer) {
         valores.push(manufacturer);
-        queryVehicle += ` AND v.manufacturer = $${valores.length}`;
+        queryVehicle += ` AND manufacturer = $${valores.length}`;
     }
     if (client_id) {
         valores.push(client_id);
-        queryVehicle += ` AND v.client_id = $${valores.length}`;
+        queryVehicle += ` AND client_id = $${valores.length}`;
     }
     
 

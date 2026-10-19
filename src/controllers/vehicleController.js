@@ -13,7 +13,7 @@ const listar = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Veículo não encontrado' });
         }
 
-        return res.status(500).json({ erro: 'Erro interno ao buscar veículos' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao buscar veículos' });
     }
 };
 
@@ -97,7 +97,7 @@ const deletar = async (req, res) =>{
             return res.status(404).json({ success: false, message: 'Veículo não encontrado' });
         }
 
-        return res.status(500).json({ success: false, message: 'Erro ao deletar veículo' });
+        return res.status(500).json({ success: false, message: 'Erro interno ao deletar veículo' });
     }
 };
 
