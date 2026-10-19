@@ -18,7 +18,7 @@ const listar = async (id, plate, client_id, chassi, manufacturer) => {
     const valores = [];
     if (id) {
         valores.push(id);
-        queryVehicle += ` id = $${valores.length}`;
+        queryVehicle += ` AND id = $${valores.length}`;
     }
     if (plate) {
         valores.push(plate);
@@ -57,15 +57,16 @@ const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
             v.id AS vehicle_id,
             c.name AS client_name
             FROM vehicles v
-            INNER JOIN clients c ON v.client_id = c.id
-            WHERE plate = \$1;
+            FULL JOIN clients c ON v.client_id = c.id
+            WHERE v.plate = \$1;
         `, [plate]),
         vehicleDb.query(`
             SELECT 
             v.id AS vehicle_id,
             c.name AS client_name 
             FROM vehicles 
-            WHERE chassi = \$1;
+            FULL JOIN clients c ON v.client_id = c.id
+            WHERE v.chassi = \$1;
         `, [chassi])
     ]);
     
@@ -73,7 +74,7 @@ const criar = async (plate, model, chassi, manufacturer, color, client_id) => {
         throw new Error('PLATE_ALREADY_EXISTS', { "vehicle_id": vehiclePlateExists.rows[0].vehicle_id, "vehicle_client_name": vehiclePlateExists.rows[0].client_name});
     }
     if (vehicleChassiExists.rowCount > 0) {
-        throw new Error('PLATE_ALREADY_EXISTS', { "vehicle_id": vehicleChassiExists.rows[0].vehicle_id, "vehicle_client_name": vehicleChassiExists.rows[0].client_name});
+        throw new Error('CHASSI_ALREADY_EXISTS', { "vehicle_id": vehicleChassiExists.rows[0].vehicle_id, "vehicle_client_name": vehicleChassiExists.rows[0].client_name});
     }
 
     const sql = `
