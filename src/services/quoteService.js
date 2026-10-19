@@ -15,6 +15,11 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
         q.client_email AS quote_client_email,
         q.vehicle_plate AS quote_vehicle_plate,
         q.vehicle_model AS quote_vehicle_model,
+        q.vehicle_chassi AS quote_vehicle_chassi,
+        q.vehicle_color AS quote_vehicle_color,
+        q.vehicle_manufacturer AS quote_vehicle_manufacturer,
+        q.vehicle_current_kilometer AS quote_vehicle_current_kilometer,
+        q.vehicle_gas_level AS quote_vehicle_gas_level,
         q.user_name AS quote_user_name,
         q.client_id AS quote_client_id,
         q.vehicle_id AS quote_vehicle_id,
@@ -75,6 +80,11 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
                 client_email : linha.quote_client_email,
                 vehicle_plate : linha.quote_vehicle_plate,
                 vehicle_model : linha.quote_vehicle_model,
+                vehicle_chassi: linha.quote_vehicle_chassi,
+                vehicle_color: linha.quote_vehicle_color,
+                vehicle_manufacturer: linha.quote_vehicle_manufacturer,
+                vehicle_current_kilometer: linha.quote_vehicle_current_kilometer,
+                vehicle_gas_level: linhaquote_vehicle_gas_level,
                 user_name : linha.quote_user_name,
                 client_id : linha.quote_client_id,
                 vehicle_id : linha.quote_vehicle_id,
@@ -98,7 +108,7 @@ const listar = async (status, id, client_cpf_cnpj, client_name, vehicle_plate) =
     return Object.values(quotesMap);
 };
 
-const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, items_quote) => {
+const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_id, user_id, items_quote, vehicle_current_kilometer, vehicle_gas_level) => {
     
     const clientDb = await db.connect();
 
@@ -107,7 +117,7 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
 
         const [clientRes, vehicleRes, userRes] = await Promise.all([
             clientDb.query('SELECT name, cpf_cnpj, phone, email FROM clients WHERE id = \$1', [client_id]),
-            clientDb.query('SELECT plate, model FROM vehicles WHERE id = \$1', [vehicle_id]),
+            clientDb.query('SELECT plate, model, chassi, manufacturer, color FROM vehicles WHERE id = \$1', [vehicle_id]),
             clientDb.query('SELECT full_name FROM users WHERE id = \$1', [user_id])
         ]);
 
@@ -121,22 +131,26 @@ const criar = async (date_quote, date_start, date_delivery, client_id, vehicle_i
         const client_email = clientRes.rows[0].email;
         const vehicle_plate = vehicleRes.rows[0].plate;
         const vehicle_model = vehicleRes.rows[0].model;
+        const vehicle_chassi = vehicleRes.rows[0].chassi;
+        const vehicle_manufacturer = vehicleRes.rows[0].manufacturer;
+        const vehicle_color = vehicleRes.rows[0].color;
+
         const user_name = userRes.rows[0].full_name;
 
         const sqlQuote = `
             INSERT INTO quotes (
                 date_quote, date_start, date_delivery, client_id, vehicle_id, user_id,
                 client_name, client_cpf_cnpj, client_phone, client_email, vehicle_plate, vehicle_model, user_name,
-                status
+                status, vehicle_chassi, vehicle_manufacturer, vehicle_color, vehicle_current_kilometer, vehicle_gas_level
             ) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) 
             RETURNING *;
         `;
         
         const quoteResult = await clientDb.query(sqlQuote, [
             date_quote, date_start, date_delivery, client_id, vehicle_id, user_id,
             client_name, client_cpf_cnpj, client_phone, client_email, vehicle_plate, vehicle_model, user_name,
-            "Pendente"
+            "Pendente", vehicle_chassi, vehicle_manufacturer, vehicle_color, vehicle_current_kilometer, vehicle_gas_level
         ]);
 
         const quoteId = quoteResult.rows[0].id;
