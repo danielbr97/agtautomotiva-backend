@@ -3,12 +3,12 @@ const userService = require('../services/userService');
 const createUser = async (req, res) => {
     const { first_name, last_name, email, password, access_level } = req.body;
 
-    if(!first_name || !last_name || !email || !password){
+    if(!first_name || !last_name || !email || !password || !access_level){
         return res.status(400).json({ success: false, message: 'Nome, Sobrenome, Email e Senha são obrigatórios'});
     }
 
     try {
-        await userService.createUser(first_name, last_name, email, password);
+        await userService.createUser(first_name, last_name, email, password, access_level);
         return res.status(201).json({ success: true, message: 'Usuário criado com sucesso' });
     } catch (error) {
         console.error("Erro em userController.createUser:", error);
