@@ -52,7 +52,7 @@ const updateUser = async (first_name, last_name, email, newemail, access_level) 
             access_level COALESCE($4, access_level)
         WHERE email = $5
     `;
-    await db.query(sql, [first_name, last_name, newemail, email, access_level]);
+    await db.query(sql, [first_name, last_name, newemail, access_level, email ]);
 }
 
 module.exports = {
