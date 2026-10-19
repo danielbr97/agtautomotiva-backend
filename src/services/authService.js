@@ -21,7 +21,7 @@ const login = async (email, password) => {
 
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
 
-    return { autenticated: true, token };
+    return token;
 }
 
 module.exports = { 
