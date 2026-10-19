@@ -1,15 +1,15 @@
 const userService = require('../services/userService');
 
 const createUser = async (req, res) => {
-    const { first_name, last_name, email, password } = req.body;
+    const { first_name, last_name, email, password, access_level } = req.body;
 
     if(!first_name || !last_name || !email || !password){
         return res.status(400).json({ success: false, message: 'Nome, Sobrenome, Email e Senha são obrigatórios'});
     }
 
     try {
-        const newUser = await userService.createUser(first_name, last_name, email, password);
-        return res.status(201).json(newUser);
+        await userService.createUser(first_name, last_name, email, password);
+        return res.status(201).json({ success: true, message: 'Usuário criado com sucesso' });
     } catch (error) {
         console.error("Erro em userController.createUser:", error);
 
@@ -43,17 +43,17 @@ const changePassword = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const { first_name, last_name, email, newemail } = req.body;
+    const { first_name, last_name, email, newemail, access_level } = req.body;
 
     if(!email){
         return res.status(400).json({ success: false, message: 'E-mail é obrigatório'});
-    }else if(!first_name && !last_name && !newemail){
-        return res.status(400).json({ success: false, message: 'Primeiro Nome ou Sobrenome ou Novo E-mail precisa estar preenchido'});
+    }else if(!first_name && !last_name && !newemail && !access_level){
+        return res.status(400).json({ success: false, message: 'Primeiro Nome ou Sobrenome ou Novo E-mail ou Nível de Acesso precisa estar preenchido'});
     }
 
     try {
-        await userService.updateUser(first_name, last_name, email, newemail);
-        return res.status(201).json({success: true, message: 'Usuário criado com sucesso'});
+        await userService.updateUser(first_name, last_name, email, newemail, access_level);
+        return res.status(201).json({ success: true, message: 'Usuário atualizado com sucesso' });
     } catch (error) {
         console.error("Erro em userController.updateUser:", error);
 

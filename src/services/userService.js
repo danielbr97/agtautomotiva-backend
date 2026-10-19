@@ -1,7 +1,7 @@
 const db = require('../database');
 const bcrypt = require('bcryptjs');
 
-const createUser = async (first_name, last_name, email, password) => {
+const createUser = async (first_name, last_name, email, password, access_level) => {
     const userDuplicated = await db.query('SELECT id FROM users WHERE email = $1;', [email]);
 
     if (userDuplicated.rowCount > 0) {
@@ -10,10 +10,8 @@ const createUser = async (first_name, last_name, email, password) => {
     
     const saltRounds = 10;
     const senhaHash = await bcrypt.hash(password, saltRounds);
-    const sql = 'INSERT INTO users (first_name, last_name, email, password, full_name) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
-    const resultado = await db.query(sql, [first_name, last_name, email, senhaHash, (first_name + ' ' + last_name)]);
-
-    return resultado.rows[0];
+    const sql = 'INSERT INTO users (first_name, last_name, email, password, full_name, access_level) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;';
+    await db.query(sql, [first_name, last_name, email, senhaHash, (first_name + ' ' + last_name), access_level]);
 }
 
 const changePassword = async (email, password, newpassword) => {
@@ -32,12 +30,10 @@ const changePassword = async (email, password, newpassword) => {
     const saltRounds = 10;
     const senhaHash = await bcrypt.hash(newpassword, saltRounds);
     const sql = 'UPDATE users SET password = $1 WHERE email = $2';
-    const resultado = await db.query(sql, [senhaHash, email]);
-
-    return resultado.rows[0];
+    await db.query(sql, [senhaHash, email]);
 }
 
-const updateUser = async (first_name, last_name, email, newemail) => {
+const updateUser = async (first_name, last_name, email, newemail, access_level) => {
 
     if(newemail){
         const userDuplicated = await db.query('SELECT id, first_name, last_name FROM users WHERE email = $1;', [newemail]);
@@ -52,12 +48,11 @@ const updateUser = async (first_name, last_name, email, newemail) => {
         SET 
             first_name = COALESCE($1, first_name), 
             last_name = COALESCE($2, last_name),
-            email = COALESCE($3, email)
-        WHERE email = $4
+            email = COALESCE($3, email),
+            access_level COALESCE($4, access_level)
+        WHERE email = $5
     `;
-    const resultado = await db.query(sql, [first_name, last_name, newemail, email]);
-
-    return resultado.rows[0];
+    await db.query(sql, [first_name, last_name, newemail, email, access_level]);
 }
 
 module.exports = {
