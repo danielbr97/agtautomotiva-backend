@@ -18,38 +18,48 @@ const listar = async (req, res) => {
 };
 
 const criar = async (req, res) => {
-    const { name, email, phone, cpf_cnpj } = req.body;
+    const { name, email, phone, cpf_cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country } = req.body;
     
     if (!name || !email || !phone || !cpf_cnpj) {
         return res.status(400).json({ success: false, error: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
     }
 
+    if(postal_code, street, number_address, neighborhood, city, state, country){
+        return res.status(400).json({ success: false, error: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
+    }
+
     try {
-        await clientsService.criar(name, email, phone, cpf_cnpj);
+        await clientsService.criar(name, email, phone, cpf_cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country);
         return res.status(201).json({success: true, message: 'Cliente criado com sucesso'});
     } catch (error) {
         console.error("Erro em clientsController.criar:", error);
 
-        if (error.message === 'CLIENT_ALREADY_EXISTS') {
+        if (error.message === 'CLIENT_CPFNPJ_ALREADY_EXISTS') {
             return res.status(409).json({ success: false, error: 'CNPJ/CPF já está cadastrado' });
+        }
+
+        if (error.message === 'CLIENT_EMAIL_ALREADY_EXISTS') {
+            return res.status(409).json({ success: false, error: 'E-mail já está cadastrado' });
         }
 
         return res.status(500).json({ success: false, error: 'Erro interno ao criar cliente' });
     }
 };
 
-const atualizar = async (req, res) => {
+const atualizarCliente = async (req, res) => {
     const { name, email, phone, cpf_cnpj } = req.body;
     
-    if (!name || !email || !phone || !cpf_cnpj) {
-        return res.status(400).json({ success: false, error: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
+    if (!cpf_cnpj) {
+        return res.status(400).json({ success: false, error: 'CPF/CNPJ é obrigatório' });
+    }else if(!name && !email && !phone){
+        return res.status(400).json({ success: false, error: 'Nome ou E-mail ou Telefone precisa estar preenchido' });
     }
 
     try {
-        await clientsService.atualizar(name, email, phone, cpf_cnpj);
+        await clientsService.atualizarCliente(name, email, phone, cpf_cnpj);
         return res.status(201).json({ success: true, message: 'Cliente atualizado com sucesso'});
     } catch (error) {
-        console.error("Erro em clientsController.atualizar:", error);
+        console.error("Erro em clientsController.atualizarCliente:", error);
 
         if (error.message === 'EMAIL_ALREADY_EXISTS') {
             return res.status(409).json({ success: false, error: 'Este e-mail já está cadastrado' });
@@ -58,6 +68,28 @@ const atualizar = async (req, res) => {
         return res.status(500).json({ success: false, error: 'Erro interno ao salvar cliente' });
     }
 };
+
+const atualizarEndereco = async (req, res) => {
+
+    const { postal_code, street, number_address, complement , neighborhood, city, state, country, cpf_cnpj } = req.body;
+    
+    if (!cpf_cnpj) {
+        return res.status(400).json({ success: false, error: 'CPF/CNPJ é obrigatório' });
+    }
+
+    if (!postal_code || !street || !number_address || !neighborhood || !city || !state || !country || !cpf_cnpj) {
+        return res.status(400).json({ success: false, error: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
+    }
+
+    try {
+        await clientsService.atualizarEndereco(postal_code, street, number_address, complement , neighborhood, city, state, country, cpf_cnpj);
+        return res.status(201).json({ success: true, message: 'Endereço de cliente atualizado com sucesso'});
+    } catch (error) {
+        console.error("Erro em clientsController.atualizarEndereco:", error);
+
+        return res.status(500).json({ success: false, error: 'Erro interno ao salvar endereço do cliente' });
+    }
+}
 
 const deletar = async (req, res) =>{
     const { id } = req.query;
@@ -80,5 +112,6 @@ module.exports = {
     listar,
     criar,
     deletar,
-    atualizar
+    atualizarCliente,
+    atualizarEndereco
 };

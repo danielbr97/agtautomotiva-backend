@@ -7,7 +7,8 @@ const { validateJWT } = require('../middlewares/auth');
 router.use(validateJWT);
 router.get('/get', clientsController.listar);
 router.post('/create', clientsController.criar);
-router.post('/update', clientsController.atualizar);
+router.post('/updateClient', clientsController.atualizarCliente);
+router.post('/updateAddressClient', clientsController.atualizarEndereco);
 router.delete('/delete', clientsController.deletar);
 
 module.exports = router;
