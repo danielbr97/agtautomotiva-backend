@@ -24,7 +24,7 @@ const criar = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Nome, E-mail, CPF/CNPJ e Telefone são obrigatórios' });
     }
 
-    if(postal_code, street, number_address, neighborhood, city, state, country){
+    if(!postal_code || !street || !number_address || !neighborhood || !city || !state || !country){
         return res.status(400).json({ success: false, message: 'CEP, Estado, Cidade, Bairro, Rua e Número são obrigatórios' });
     }
 
