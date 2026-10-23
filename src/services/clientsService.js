@@ -65,6 +65,7 @@ const listar = async (id, cpf_cnpj, email, phone, name) => {
                 name: linha.client_name,
                 cpf_cnpj: linha.client_cpf_cnpj,
                 phone: linha.client_phone,
+                email: linha.client_email,
                 postal_code: linha.client_postal_code,
                 street: linha.client_street,
                 number_address: linha.client_number_address,
