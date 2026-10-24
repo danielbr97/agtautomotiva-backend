@@ -129,7 +129,7 @@ const atualizarSupplierAddress = async (cnpj, postal_code, street, number_addres
         neighborhood = COALESCE($5, neighborhood),
         city = COALESCE($6, city),
         state = COALESCE($7, state),
-        country = COALESCE($8, country),
+        country = COALESCE($8, country)
         WHERE cnpj = $9;
     `;
 
