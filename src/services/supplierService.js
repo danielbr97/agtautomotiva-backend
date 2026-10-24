@@ -103,6 +103,12 @@ const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category,
 
 const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, parts_category) => {
 
+    const supplierExists = await db.query('SELECT id FROM suppliers WHERE cnpj = $1;', [cnpj]);
+    
+    if(supplierExists.rowCount <= 0){
+        throw new Error('SUPPLIER_NOT_FOUND');
+    }
+    
     const sql = `
         UPDATE suppliers
         SET
@@ -118,6 +124,12 @@ const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, par
 }
 
 const atualizarSupplierAddress = async (cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country) => {
+
+    const supplierExists = await db.query('SELECT id FROM suppliers WHERE cnpj = $1;', [cnpj]);
+    
+    if(supplierExists.rowCount <= 0){
+        throw new Error('SUPPLIER_NOT_FOUND');
+    }
 
     const sql = `
         UPDATE suppliers
