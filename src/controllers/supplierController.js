@@ -51,6 +51,10 @@ const atualizarSupplier = async (req, res) => {
     } catch (error) {
         console.error("Erro em supplierController.atualizarSupplier:", error);
 
+        if(error.message === 'SUPPLIER_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Fornecedor não encontrado' });
+        }
+
         return res.status(500).json({ success: false, message: 'Erro interno ao salvar fornecedor' });
     }
 };
@@ -67,6 +71,10 @@ const atualizarSupplierAddress = async (req, res) => {
         return res.status(201).json({ success: true, message: 'Fornecedor atualizado com sucesso'});
     } catch (error) {
         console.error("Erro em supplierController.atualizarSupplierAddress:", error);
+
+        if(error.message === 'SUPPLIER_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Fornecedor não encontrado' });
+        }
 
         return res.status(500).json({ success: false, message: 'Erro interno ao salvar fornecedor' });
     }
