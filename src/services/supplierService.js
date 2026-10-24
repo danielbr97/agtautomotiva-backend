@@ -58,7 +58,7 @@ const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_cate
         throw new Error('SUPPLIER_NOT_FOUND');
     }
 
-    return resultado;
+    return resultado.rows[0];
 };
 
 const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country) => {
