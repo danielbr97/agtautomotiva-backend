@@ -104,7 +104,7 @@ const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category,
 const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, parts_category) => {
 
     const sql = `
-        UPDATE supplier 
+        UPDATE suppliers
         SET
         legal_name = COALESCE($1, legal_name), 
         trade_name = COALESCE($2, trade_name),

@@ -31,15 +31,7 @@ const criar = async (req, res) => {
         console.error("Erro em supplierController.criar:", error);
 
         if (error.message === 'SUPPLIER_ALREADY_EXISTS') {
-            return res.status(409).json({
-                success: false,
-                message: 'Placa já está cadastrado',
-                vehicle_id: error.vehicle_id,
-                vehicle_client_name: error.vehicle_client_name,
-                vehicle_plate : error.vehicle_plate,
-                vehicle_manufacturer : error.vehicle_manufacturer,
-                vehicle_model : error.vehicle_model
-            });
+            return res.status(409).json({ success: false, message: 'Fornecedor já está cadastrado' });
         }
 
         return res.status(500).json({ success: false, message: 'Erro interno ao criar fornecedor' });
