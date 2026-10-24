@@ -64,8 +64,7 @@ const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_cate
 
 const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country) => {
 
-    console.log('cnpj -> ',cnpj);
-    const supplierCnpjExists = db.query(`
+    const supplierCnpjExists = await db.query(`
         SELECT
         id,
         trade_name,
@@ -73,8 +72,6 @@ const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category,
         FROM suppliers
         WHERE cnpj = $1;
     `, [cnpj]);
-
-    console.log('supplierCnpjExists -> ',supplierCnpjExists);
 
     if (supplierCnpjExists.rowCount > 0) {
         const errorHandled = new Error('SUPPLIER_ALREADY_EXISTS');
