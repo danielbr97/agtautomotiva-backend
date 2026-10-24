@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const quoteRoutes = require('./routes/quoteRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
+const supplierRoutes = require('./routes/supplierRoutes');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/quote', quoteRoutes);
 app.use('/vehicle', vehicleRoutes);
+app.use('/supplier', supplierRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

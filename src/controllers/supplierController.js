@@ -1,0 +1,106 @@
+const supplierService = require('../services/supplierService');
+
+const listar = async (req, res) => {
+    const { id, legal_name, trade_name, cnpj, phone, email, parts_category } = req.query;
+
+    try {
+        const vehicles = await supplierService.listar(id, legal_name, trade_name, cnpj, phone, email, parts_category);
+        return res.json(vehicles);
+    } catch (error) {
+        console.error("Erro em supplierController.listar:", error);
+
+        if(error.message == 'SUPPLIER_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Fornecedor não encontrado' });
+        }
+
+        return res.status(500).json({ success: false, message: 'Erro interno ao buscar Fornecedores' });
+    }
+};
+
+const criar = async (req, res) => {
+    const { legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country } = req.body;
+    
+    if (!legal_name || !trade_name || !cnpj || !phone || !email || !parts_category || !postal_code || !street || !number_address || !neighborhood || !city || !state || !country) {
+        return res.status(400).json({ success: false, message: 'Razão Social, Nome Fantasia, CNPJ, Telefone/Contato, E-mail, Categoria de Peças e Endereço são campos obrigatórios' });
+    }
+
+    try {
+        await supplierService.criar(legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country);
+        return res.status(201).json({success: true, message: 'Fornecedor criado com sucesso'});
+    } catch (error) {
+        console.error("Erro em supplierController.criar:", error);
+
+        if (error.message === 'SUPPLIER_ALREADY_EXISTS') {
+            return res.status(409).json({
+                success: false,
+                message: 'Placa já está cadastrado',
+                vehicle_id: error.vehicle_id,
+                vehicle_client_name: error.vehicle_client_name,
+                vehicle_plate : error.vehicle_plate,
+                vehicle_manufacturer : error.vehicle_manufacturer,
+                vehicle_model : error.vehicle_model
+            });
+        }
+
+        return res.status(500).json({ success: false, message: 'Erro interno ao criar fornecedor' });
+    }
+};
+
+const atualizarSupplier = async (req, res) => {
+    const { legal_name, trade_name, cnpj, phone, email, parts_category } = req.body;
+    
+    if (!legal_name || !trade_name || !cnpj || !phone || !email || !parts_category) {
+        return res.status(400).json({ success: false, message: 'Razão Social, Nome Fantasia, CNPJ, Telefone, E-mail e Categoria de peças são campos obrigatórios' });
+    }
+
+    try {
+        await supplierService.atualizarSupplier(legal_name, trade_name, cnpj, phone, email, parts_category);
+        return res.status(201).json({ success: true, message: 'Fornecedor atualizado com sucesso'});
+    } catch (error) {
+        console.error("Erro em supplierController.atualizarSupplier:", error);
+
+        return res.status(500).json({ success: false, message: 'Erro interno ao salvar fornecedor' });
+    }
+};
+
+const atualizarSupplierAddress = async (req, res) => {
+    const { cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country } = req.body;
+    
+    if (!cnpj || !postal_code || !street || !number_address || !neighborhood || !city || !state || !country) {
+        return res.status(400).json({ success: false, message: 'CEP, Rua, Número do endereço, Bairro, Cidade, Estado e País são campos obrigatórios' });
+    }
+
+    try {
+        await supplierService.atualizarSupplierAddress(cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country);
+        return res.status(201).json({ success: true, message: 'Fornecedor atualizado com sucesso'});
+    } catch (error) {
+        console.error("Erro em supplierController.atualizarSupplierAddress:", error);
+
+        return res.status(500).json({ success: false, message: 'Erro interno ao salvar fornecedor' });
+    }
+};
+
+const deletar = async (req, res) =>{
+    const { id } = req.query;
+
+    try {
+        await supplierService.deletar(id);
+        return res.json({ sucess: true, mensage: 'Fornecedor deletado com sucesso!' });
+    } catch (error) {
+        console.error("Erro em supplierController.deletar:", error);
+
+        if(error.message === 'SUPPLIER_NOT_FOUND'){
+            return res.status(404).json({ success: false, message: 'Fornecedor não encontrado' });
+        }
+
+        return res.status(500).json({ success: false, message: 'Erro interno ao deletar fornecedor' });
+    }
+};
+
+module.exports = {
+    listar,
+    criar,
+    deletar,
+    atualizarSupplier,
+    atualizarSupplierAddress
+};
