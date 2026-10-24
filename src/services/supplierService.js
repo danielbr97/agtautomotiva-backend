@@ -120,7 +120,7 @@ const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, par
 const atualizarSupplierAddress = async (cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country) => {
 
     const sql = `
-        UPDATE supplier 
+        UPDATE suppliers
         SET
         postal_code = COALESCE($1, postal_code), 
         street = COALESCE($2, street),
