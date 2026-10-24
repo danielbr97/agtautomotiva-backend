@@ -108,7 +108,7 @@ const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, par
     if(supplierExists.rowCount <= 0){
         throw new Error('SUPPLIER_NOT_FOUND');
     }
-    
+
     const sql = `
         UPDATE suppliers
         SET
@@ -150,7 +150,7 @@ const atualizarSupplierAddress = async (cnpj, postal_code, street, number_addres
 
 const deletar = async (id) =>{
 
-    const resultado = await db.query('DELETE FROM supliers WHERE id = $1 RETURNING id;', [id]);
+    const resultado = await db.query('DELETE FROM suppliers WHERE id = $1 RETURNING id;', [id]);
 
     if (resultado.rowCount === 0) {
         throw new Error('SUPPLIER_NOT_FOUND');
