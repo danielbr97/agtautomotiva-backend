@@ -1,10 +1,10 @@
 const supplierService = require('../services/supplierService');
 
 const listar = async (req, res) => {
-    const { id, legal_name, trade_name, cnpj, phone, email, parts_category } = req.query;
+    const { id, legal_name, trade_name, cnpj, phone, email, parts_category, contact_name} = req.query;
 
     try {
-        const vehicles = await supplierService.listar(id, legal_name, trade_name, cnpj, phone, email, parts_category);
+        const vehicles = await supplierService.listar(id, legal_name, trade_name, cnpj, phone, email, parts_category, contact_name);
         return res.json(vehicles);
     } catch (error) {
         console.error("Erro em supplierController.listar:", error);
@@ -18,14 +18,14 @@ const listar = async (req, res) => {
 };
 
 const criar = async (req, res) => {
-    const { legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country } = req.body;
+    const { legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country, contact_name } = req.body;
     
-    if (!legal_name || !trade_name || !cnpj || !phone || !email || !parts_category || !postal_code || !street || !number_address || !neighborhood || !city || !state || !country) {
-        return res.status(400).json({ success: false, message: 'Razão Social, Nome Fantasia, CNPJ, Telefone/Contato, E-mail, Categoria de Peças e Endereço são campos obrigatórios' });
+    if (!legal_name || !trade_name || !cnpj || !phone || !email || !parts_category || !postal_code || !street || !number_address || !neighborhood || !city || !state || !country || !contact_name) {
+        return res.status(400).json({ success: false, message: 'Razão Social, Nome Fantasia, CNPJ, Telefone/Contato, E-mail, Categoria de Peças, Nome do Contato e Endereço são campos obrigatórios' });
     }
 
     try {
-        await supplierService.criar(legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country);
+        await supplierService.criar(legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country, contact_name);
         return res.status(201).json({success: true, message: 'Fornecedor criado com sucesso'});
     } catch (error) {
         console.error("Erro em supplierController.criar:", error);
@@ -39,14 +39,14 @@ const criar = async (req, res) => {
 };
 
 const atualizarSupplier = async (req, res) => {
-    const { legal_name, trade_name, cnpj, phone, email, parts_category } = req.body;
+    const { legal_name, trade_name, cnpj, phone, email, parts_category, contact_name } = req.body;
     
-    if (!legal_name || !trade_name || !cnpj || !phone || !email || !parts_category) {
-        return res.status(400).json({ success: false, message: 'Razão Social, Nome Fantasia, CNPJ, Telefone, E-mail e Categoria de peças são campos obrigatórios' });
+    if (!legal_name || !trade_name || !cnpj || !phone || !email || !parts_category || !contact_name) {
+        return res.status(400).json({ success: false, message: 'Razão Social, Nome Fantasia, CNPJ, Telefone, E-mail, Nome do contato e Categoria de peças são campos obrigatórios' });
     }
 
     try {
-        await supplierService.atualizarSupplier(legal_name, trade_name, cnpj, phone, email, parts_category);
+        await supplierService.atualizarSupplier(legal_name, trade_name, cnpj, phone, email, parts_category, contact_name);
         return res.status(201).json({ success: true, message: 'Fornecedor atualizado com sucesso'});
     } catch (error) {
         console.error("Erro em supplierController.atualizarSupplier:", error);

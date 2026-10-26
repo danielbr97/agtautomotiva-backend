@@ -1,6 +1,6 @@
 const db = require('../database');
 
-const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_category) => {
+const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_category, contact_name) => {
 
     let querySupplier = `
         SELECT
@@ -18,7 +18,8 @@ const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_cate
         neighborhood, 
         city, 
         state, 
-        country
+        country,
+        contact_name
         FROM suppliers
         WHERE 1=1
     `;
@@ -52,6 +53,10 @@ const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_cate
         valores.push(parts_category);
         querySupplier += ` AND parts_category = $${valores.length}`;
     }
+    if (contact_name) {
+        valores.push(`%${contact_name}%`);
+        queryClient += ` AND contact_name ILIKE $${valores.length}`;
+    }
 
     const resultado = await db.query(querySupplier, valores);
 
@@ -62,7 +67,7 @@ const listar = async (id, legal_name, trade_name, cnpj, phone, email, parts_cate
     return resultado.rows[0];
 };
 
-const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country) => {
+const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country, contact_name) => {
 
     const supplierCnpjExists = await db.query(`
         SELECT
@@ -96,12 +101,13 @@ const criar = async (legal_name, trade_name, cnpj, phone, email, parts_category,
     neighborhood, 
     city, 
     state, 
-    country
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`;
-    await db.query(sql, [legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country]);
+    country,
+    contact_name
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *;`;
+    await db.query(sql, [legal_name, trade_name, cnpj, phone, email, parts_category, postal_code, street, number_address, complement , neighborhood, city, state, country, contact_name]);
 };
 
-const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, parts_category) => {
+const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, parts_category, contact_name) => {
 
     const supplierExists = await db.query('SELECT id FROM suppliers WHERE cnpj = $1;', [cnpj]);
     
@@ -116,11 +122,12 @@ const atualizarSupplier = async (legal_name, trade_name, cnpj, phone, email, par
         trade_name = COALESCE($2, trade_name),
         phone = COALESCE($3, phone),
         email = COALESCE($4, email),
-        parts_category = COALESCE($5, parts_category)
-        WHERE cnpj = $6;
+        parts_category = COALESCE($5, parts_category),
+        contact_name = COALESCE($6, contact_name)
+        WHERE cnpj = $7;
     `;
 
-    await db.query(sql, [legal_name, trade_name, phone, email, parts_category, cnpj]);
+    await db.query(sql, [legal_name, trade_name, phone, email, parts_category, contact_name, cnpj]);
 }
 
 const atualizarSupplierAddress = async (cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country) => {
