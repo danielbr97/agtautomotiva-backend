@@ -110,11 +110,7 @@ const criar = async (name, email, phone, cpf_cnpj, postal_code, street, number_a
         name, 
         email, 
         phone, 
-        cpf_cnpj, 
-        name, 
-        email, 
-        phone, 
-        cpf_cnpj, 
+        cpf_cnpj,
         postal_code, 
         street, 
         number_address, 
@@ -124,7 +120,7 @@ const criar = async (name, email, phone, cpf_cnpj, postal_code, street, number_a
         state, 
         country
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *;
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;
     `;
     await db.query(sql, [name, email, phone, cpf_cnpj, postal_code, street, number_address, complement , neighborhood, city, state, country]);
 };
